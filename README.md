@@ -1,3 +1,3 @@
-# Mailles — compiler en local
+# Mailles
 
 
