@@ -1,0 +1,2318 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mailles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#e9e4da;
+    --surface:#ffffff;
+    --surface-2:#f1ece1;
+    --surface-3:#e4ddcf;
+    --ink:#2a2521;
+    --ink-soft:#726a5e;
+    --ink-faint:#a89d8b;
+    --line:#d9d0bd;
+    --line-strong:#b7ab93;
+    --accent:#2f5d5a;
+    --accent-soft:#2f5d5a1a;
+    --accent-ink:#f2f7f6;
+    --rust:#b8722e;
+    --danger:#a33b2e;
+    --danger-soft:#a33b2e1a;
+    --shadow:0 1px 2px rgba(38,33,28,.06), 0 6px 20px -8px rgba(38,33,28,.18);
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1b1815;
+      --surface:#242019;
+      --surface-2:#2b261f;
+      --surface-3:#342e25;
+      --ink:#ece5d8;
+      --ink-soft:#a79c8b;
+      --ink-faint:#7c7263;
+      --line:#3c3529;
+      --line-strong:#544a3a;
+      --accent:#5aada3;
+      --accent-soft:#5aada31f;
+      --accent-ink:#122320;
+      --rust:#d99553;
+      --danger:#e0796a;
+      --danger-soft:#e0796a1f;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -10px rgba(0,0,0,.5);
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1b1815;
+    --surface:#242019;
+    --surface-2:#2b261f;
+    --surface-3:#342e25;
+    --ink:#ece5d8;
+    --ink-soft:#a79c8b;
+    --ink-faint:#7c7263;
+    --line:#3c3529;
+    --line-strong:#544a3a;
+    --accent:#5aada3;
+    --accent-soft:#5aada31f;
+    --accent-ink:#122320;
+    --rust:#d99553;
+    --danger:#e0796a;
+    --danger-soft:#e0796a1f;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -10px rgba(0,0,0,.5);
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Work Sans", -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .shell{
+    height:100%;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 20px;
+    padding-top:calc(14px + env(safe-area-inset-top, 0px));
+    background:var(--surface);
+    border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  h1{
+    font-family:"Fraunces", Georgia, serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:1.5rem;
+    margin:0;
+    letter-spacing:.2px;
+  }
+  .tagline{
+    font-size:.8rem;
+    color:var(--ink-soft);
+    margin:0;
+  }
+  .header-title{margin-right:auto; min-width:180px}
+  .header-actions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  /* ---------- generic controls ---------- */
+  button{
+    font-family:inherit;
+    font-size:.82rem;
+    font-weight:500;
+    border:1px solid var(--line-strong);
+    background:var(--surface);
+    color:var(--ink);
+    border-radius:7px;
+    padding:7px 10px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+    transition:background .12s ease, border-color .12s ease, color .12s ease;
+  }
+  button:hover{border-color:var(--accent); color:var(--accent)}
+  button:active{transform:translateY(1px)}
+  button:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+  }
+  button.icon-btn{padding:7px; width:32px; height:32px; justify-content:center}
+  button:disabled{opacity:.4; cursor:not-allowed}
+  button:disabled:hover{border-color:var(--line-strong); color:var(--ink)}
+  button.primary{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+  button.primary:hover{opacity:.92; color:var(--accent-ink)}
+  button.danger-confirm{background:var(--danger-soft); border-color:var(--danger); color:var(--danger)}
+
+  svg.icon{width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
+
+  label{font-size:.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em}
+
+  input[type="number"]{
+    width:58px;
+    font-family:"IBM Plex Mono", monospace;
+    font-variant-numeric:tabular-nums;
+    font-size:.85rem;
+    padding:6px 7px;
+    border-radius:6px;
+    border:1px solid var(--line-strong);
+    background:var(--surface);
+    color:var(--ink);
+  }
+  input[type="text"]{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:.8rem;
+    padding:6px 8px;
+    border-radius:6px;
+    border:1px solid var(--line-strong);
+    background:var(--surface);
+    color:var(--ink);
+    width:84px;
+  }
+  select{
+    font-family:inherit;
+    font-size:.82rem;
+    padding:6px 8px;
+    border-radius:6px;
+    border:1px solid var(--line-strong);
+    background:var(--surface);
+    color:var(--ink);
+  }
+  input[type="text"]#paletteFilter{ width:100%; margin-top:2px }
+  input[type="color"]{
+    width:32px; height:32px;
+    padding:0;
+    border-radius:7px;
+    border:1px solid var(--line-strong);
+    background:none;
+    cursor:pointer;
+  }
+
+  /* ---------- body layout ---------- */
+  .app{
+    flex:1;
+    min-height:0;
+    display:flex;
+  }
+  aside{
+    width:272px;
+    flex:0 0 272px;
+    background:var(--surface-2);
+    border-right:1px solid var(--line);
+    padding:16px;
+    padding-bottom:calc(16px + env(safe-area-inset-bottom, 0px));
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+  }
+  .panel{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+  }
+  .panel-title{
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--ink-faint);
+    font-weight:500;
+  }
+  .row{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+  .field{display:flex; flex-direction:column; gap:4px}
+  .divider{height:1px; background:var(--line); border:none; margin:0}
+
+  .tool-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:6px}
+  .tool-grid button{flex-direction:column; height:52px; font-size:.68rem; gap:4px}
+  .tool-grid button[aria-pressed="true"]{
+    background:var(--accent-soft);
+    border-color:var(--accent);
+    color:var(--accent);
+  }
+
+  .current-color{
+    display:flex; align-items:center; gap:10px;
+    padding:9px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:9px;
+  }
+  .swatch-current{
+    width:34px; height:34px; border-radius:8px;
+    border:1px solid var(--line-strong);
+    flex:0 0 34px;
+    background-image:
+      linear-gradient(45deg, var(--surface-3) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--surface-3) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--surface-3) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--surface-3) 75%);
+    background-size:8px 8px;
+    background-position:0 0, 0 4px, 4px -4px, -4px 0px;
+  }
+  .current-color-info{display:flex; flex-direction:column; gap:2px; min-width:0}
+  .current-color-name{font-size:.82rem; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .current-color-hex{font-family:"IBM Plex Mono", monospace; font-size:.72rem; color:var(--ink-soft)}
+
+  .swatches{
+    display:grid;
+    grid-template-columns:repeat(6, 1fr);
+    gap:6px;
+  }
+  .swatch{
+    aspect-ratio:1;
+    border-radius:6px;
+    border:1px solid rgba(0,0,0,.12);
+    cursor:pointer;
+    padding:0;
+    position:relative;
+  }
+  .swatch[aria-pressed="true"]::after{
+    content:"";
+    position:absolute; inset:-3px;
+    border-radius:9px;
+    border:2px solid var(--accent);
+  }
+  .swatch:hover{transform:translateY(-1px)}
+
+  .recent-row{display:flex; gap:6px; flex-wrap:wrap; min-height:26px}
+  .recent-row .swatch{width:22px; height:22px; aspect-ratio:auto}
+  .empty-hint{font-size:.74rem; color:var(--ink-faint); font-style:italic}
+
+  .add-color{display:flex; gap:6px; align-items:center}
+
+  .stat-list{display:flex; flex-direction:column; gap:6px; font-size:.8rem}
+  .stat-row{display:flex; justify-content:space-between; gap:8px; font-family:"IBM Plex Mono", monospace; font-variant-numeric:tabular-nums}
+  .stat-row span:first-child{font-family:"Work Sans", sans-serif; color:var(--ink-soft)}
+
+  .hint-box{
+    font-size:.76rem;
+    color:var(--ink-soft);
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:9px 10px;
+    line-height:1.5;
+  }
+  .hint-box b{color:var(--ink); font-weight:500}
+
+  /* ---------- canvas viewport ---------- */
+  .viewport{
+    flex:1;
+    min-width:0;
+    overflow:auto;
+    background:
+      radial-gradient(var(--line) .8px, transparent .8px);
+    background-size:16px 16px;
+    background-position:-8px -8px;
+    display:flex;
+    align-items:flex-start;
+    justify-content:flex-start;
+    padding:28px;
+  }
+  #gridCanvas{
+    touch-action:none;
+    cursor:crosshair;
+  }
+  .zoom-group{
+    display:flex; align-items:center; gap:2px;
+    background:var(--surface);
+    border:1px solid var(--line-strong);
+    border-radius:7px;
+    padding:2px;
+  }
+  .zoom-group button{border:none; background:none}
+  .zoom-group button:hover{background:var(--surface-2)}
+  .zoom-pct{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:.76rem;
+    color:var(--ink-soft);
+    min-width:40px;
+    text-align:center;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .file-actions{display:flex; flex-direction:column; gap:6px}
+  .file-actions button{justify-content:flex-start}
+
+  /* ---------- fenêtre d'import d'image ---------- */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background:rgba(20,17,14,.55);
+    align-items:center; justify-content:center;
+    padding:20px;
+    z-index:50;
+  }
+  .modal-overlay[hidden]{display:none}
+  .modal-overlay:not([hidden]){display:flex}
+  .modal-overlay.drag-over .import-empty-hint{
+    border-color:var(--accent);
+    color:var(--accent);
+    background:var(--accent-soft);
+  }
+  .modal-card{
+    background:var(--surface);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    width:min(760px, 100%);
+    max-height:calc(100% - 8px);
+    overflow-y:auto;
+    display:flex; flex-direction:column;
+  }
+  .modal-header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 20px;
+    border-bottom:1px solid var(--line);
+  }
+  .modal-header h2{
+    font-family:"Fraunces", Georgia, serif;
+    font-weight:600;
+    font-size:1.15rem;
+    margin:0;
+  }
+  .modal-body{padding:20px; display:flex; flex-direction:column; gap:16px}
+  .modal-actions{
+    padding:16px 20px;
+    border-top:1px solid var(--line);
+    display:flex; justify-content:flex-end; gap:8px;
+  }
+  .import-layout{display:flex; gap:20px; flex-wrap:wrap}
+  .import-source, .import-preview{flex:1 1 260px; min-width:0}
+  .import-source img{
+    max-width:100%; max-height:220px;
+    border-radius:8px; border:1px solid var(--line);
+    margin-bottom:10px;
+    object-fit:contain;
+    background:var(--surface-3);
+  }
+  .import-source img[hidden]{display:none}
+  .import-source img:not([hidden]){display:block}
+  .import-preview canvas{
+    max-width:100%;
+    border-radius:4px;
+    border:1px solid var(--line);
+    box-shadow:var(--shadow);
+    image-rendering:pixelated;
+  }
+  .field-label{font-size:.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; display:block}
+  .radio-group{display:flex; flex-direction:column; gap:6px}
+  .radio-row{display:flex; align-items:center; gap:8px; font-size:.84rem}
+  .radio-row input{margin:0}
+  .import-empty-hint{
+    font-size:.8rem; color:var(--ink-faint); font-style:italic;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    height:100%; min-height:120px;
+    border:1px dashed var(--line-strong); border-radius:8px;
+    transition:border-color .12s ease, background .12s ease, color .12s ease;
+  }
+  .import-empty-hint[hidden]{display:none}
+  .import-empty-hint button{font-style:normal}
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 860px){
+    .app{flex-direction:column}
+    aside{
+      width:auto; flex:0 0 auto;
+      border-right:none;
+      border-bottom:1px solid var(--line);
+      flex-direction:row;
+      flex-wrap:wrap;
+      max-height:44vh;
+    }
+    .panel{flex:1 1 220px}
+    .viewport{padding:16px}
+  }
+  @media (max-width: 460px){
+    header{padding:12px 14px; padding-top:calc(12px + env(safe-area-inset-top, 0px))}
+    h1{font-size:1.24rem}
+    .tagline{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <header>
+    <div class="header-title">
+      <h1>Mailles</h1>
+      <p class="tagline">Éditeur de grille pour motifs au crochet</p>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="btnUndo" title="Annuler (Ctrl+Z)" aria-label="Annuler">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M9 7 4 12l5 5"/><path d="M4 12h11a5 5 0 0 1 0 10h-1"/></svg>
+      </button>
+      <button class="icon-btn" id="btnRedo" title="Rétablir (Ctrl+Y)" aria-label="Rétablir">
+        <svg class="icon" viewBox="0 0 24 24"><path d="m15 7 5 5-5 5"/><path d="M20 12H9A5 5 0 0 0 9 22h1"/></svg>
+      </button>
+      <div class="zoom-group">
+        <button class="icon-btn" id="btnZoomOut" aria-label="Zoom arrière">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M8 11h6"/></svg>
+        </button>
+        <span class="zoom-pct" id="zoomPct">100%</span>
+        <button class="icon-btn" id="btnZoomIn" aria-label="Zoom avant">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="app">
+    <aside>
+      <div class="panel">
+        <div class="panel-title">Dimensions de la grille</div>
+        <div class="row">
+          <div class="field">
+            <label for="inputCols">Colonnes</label>
+            <input type="number" id="inputCols" min="2" max="120" value="20">
+          </div>
+          <div class="field">
+            <label for="inputRows">Rangs</label>
+            <input type="number" id="inputRows" min="2" max="120" value="20">
+          </div>
+        </div>
+        <button class="primary" id="btnApplySize" style="justify-content:center">Appliquer la taille</button>
+        <button id="btnClear" style="justify-content:center">Effacer la grille</button>
+      </div>
+
+      <hr class="divider">
+
+      <div class="panel">
+        <div class="panel-title">Plan de travail</div>
+        <button id="btnAddBlock" style="justify-content:center">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Ajouter une grille
+        </button>
+        <button id="btnDeleteBlock" style="justify-content:center">Supprimer la grille active</button>
+      </div>
+
+      <hr class="divider">
+
+      <div class="panel">
+        <div class="panel-title">Outil</div>
+        <div class="tool-grid" role="group" aria-label="Choix de l'outil">
+          <button id="toolPen" aria-pressed="true" title="Crayon">
+            <svg class="icon" viewBox="0 0 24 24"><path d="m12 20 8.5-8.5a2.1 2.1 0 0 0-3-3L9 17l-1 4Z"/></svg>
+            Crayon
+          </button>
+          <button id="toolEraser" aria-pressed="false" title="Gomme">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M18 13 9 22H4l-1-1 12-12Z"/><path d="m9 4 11 11-4 4L5 8Z"/></svg>
+            Gomme
+          </button>
+          <button id="toolPicker" aria-pressed="false" title="Pipette">
+            <svg class="icon" viewBox="0 0 24 24"><path d="m15.5 5.5 3 3L8 19l-4 1 1-4Z"/><path d="m13 8 3-3"/></svg>
+            Pipette
+          </button>
+          <button id="toolBucket" aria-pressed="false" title="Pot de peinture">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M3 12c0-1 .6-1.8 1.6-2.8l6-6a2 2 0 0 1 2.8 0l5.4 5.4a2 2 0 0 1 0 2.8l-6 6c-1 1-1.8 1.6-2.8 1.6-2.8 0-7-3.2-7-7Z"/><path d="m11.5 3.5 7.5 7.5"/><path d="M17 14.5c0 1.3 1.5 2 1.5 3.5a1.5 1.5 0 0 1-3 0c0-1.5 1.5-2.2 1.5-3.5Z"/></svg>
+            Pot
+          </button>
+          <button id="toolSelect" aria-pressed="false" title="Sélection rectangulaire">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1.5" stroke-dasharray="3 3"/></svg>
+            Sélection
+          </button>
+          <button id="toolPaste" aria-pressed="false" title="Coller (clique une grille pour y déposer la copie)">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="7" y="6" width="11" height="14" rx="1.5"/><path d="M9 6V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5V6"/></svg>
+            Coller
+          </button>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="panel">
+        <div class="panel-title">Sélection &amp; presse-papiers</div>
+        <div class="stat-list">
+          <div class="stat-row"><span>Sélection</span><span id="selectionInfo">Aucune</span></div>
+          <div class="stat-row"><span>Presse-papiers</span><span id="clipboardInfo">Vide</span></div>
+        </div>
+        <div class="row">
+          <button id="btnCopySelection" disabled>Copier (Ctrl+C)</button>
+          <button id="btnClearSelection" disabled>Effacer la sélection</button>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="panel">
+        <div class="panel-title">Couleur active</div>
+        <div class="current-color">
+          <div class="swatch-current" id="currentSwatch" style="background:#2f5d5a"></div>
+          <div class="current-color-info">
+            <span class="current-color-name" id="currentColorName">Bleu canard</span>
+            <span class="current-color-hex" id="currentColorHex">#2F5D5A</span>
+          </div>
+        </div>
+        <div class="add-color">
+          <input type="color" id="colorPicker" value="#2f5d5a" title="Choisir une couleur">
+          <input type="text" id="hexInput" placeholder="#RRGGBB" maxlength="7">
+          <button id="btnApplyHex">Utiliser</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Palette de fils</div>
+        <div class="row">
+          <select id="brandSelect" style="flex:1"></select>
+        </div>
+        <input type="text" id="paletteFilter" placeholder="Filtrer par nom ou numéro..." style="width:100%">
+        <div class="swatches" id="paletteSwatches"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Couleurs récentes</div>
+        <div class="recent-row" id="recentSwatches">
+          <span class="empty-hint">Aucune pour l'instant</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Palette perso</div>
+        <div class="recent-row" id="customSwatches">
+          <span class="empty-hint">Aucune pour l'instant</span>
+        </div>
+        <div class="add-color">
+          <input type="color" id="customColorPicker" value="#2f5d5a" title="Choisir une couleur à ajouter">
+          <button id="btnAddCustomColor" style="flex:1; justify-content:center">Ajouter à ma palette</button>
+        </div>
+        <div class="empty-hint">Double-clique une couleur perso pour la retirer.</div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="panel">
+        <div class="panel-title">Fichier</div>
+        <div class="file-actions">
+          <button id="btnExportJson">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+            Exporter la grille (.json)
+          </button>
+          <button id="btnImportJson">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M5 3h14"/></svg>
+            Importer une grille (.json)
+          </button>
+          <button id="btnExportPng">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></svg>
+            Exporter en image (.png)
+          </button>
+          <button id="btnImportImage">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></svg>
+            Importer une image...
+          </button>
+        </div>
+        <input type="file" id="fileInputJson" accept="application/json,.json" hidden>
+        <input type="file" id="fileInputImage" accept="image/*" hidden>
+      </div>
+
+      <hr class="divider">
+
+      <div class="panel">
+        <div class="panel-title">État de la grille</div>
+        <div class="stat-list">
+          <div class="stat-row"><span>Dimensions</span><span id="statDims">20 × 20</span></div>
+          <div class="stat-row"><span>Mailles remplies</span><span id="statFilled">0 / 400</span></div>
+          <div class="stat-row"><span>Couleurs utilisées</span><span id="statColors">0</span></div>
+          <div class="stat-row"><span>Grilles sur le plan</span><span id="statBlocks">1</span></div>
+        </div>
+      </div>
+
+      <div class="hint-box">
+        <b>Clic</b> peint une maille, <b>glisser</b> peint en continu.
+        <b>Alt+clic</b> prélève une couleur, <b>clic droit</b> gomme.
+        Avec le <b>pot</b>, un clic remplit toute la zone connectée de la même couleur ;
+        une frontière qui ne se touche qu'en diagonale suffit à fermer une forme.
+        Plusieurs grilles peuvent cohabiter sur le plan : clique une grille pour
+        l'activer, <b>attrape son en-tête</b> pour la déplacer, et utilise le
+        <b>×</b> dans l'en-tête (ou « Supprimer la grille active ») pour la retirer.
+        Avec <b>Sélection</b>, glisse un rectangle puis <b>Copier</b> (Ctrl+C) ;
+        passe ensuite sur <b>Coller</b> (Ctrl+V) et clique dans n'importe quelle
+        grille pour y déposer la copie — même une autre grille du plan.
+        Le travail en cours est conservé dans ce navigateur.
+      </div>
+    </aside>
+
+    <div class="viewport" id="viewport">
+      <canvas id="gridCanvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="importModal" hidden>
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>Importer une image</h2>
+      <button class="icon-btn" id="btnImportClose" aria-label="Fermer">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="import-layout">
+        <div class="import-source">
+          <span class="field-label">Image source</span>
+          <img id="importSourceImg" alt="Image importée" hidden>
+          <div class="import-empty-hint" id="importDropzone">
+            <span id="importDropzoneMsg">Glisse une image ici, ou</span><br>
+            <button id="btnImportChoose" style="margin-top:8px">Choisir un fichier...</button>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="importCols">Colonnes</label>
+              <input type="number" id="importCols" min="2" max="120" value="20">
+            </div>
+            <div class="field">
+              <label for="importRows">Rangs</label>
+              <input type="number" id="importRows" min="2" max="120" value="20">
+            </div>
+          </div>
+          <span class="field-label" style="margin-top:10px">Couleurs</span>
+          <div class="radio-group">
+            <label class="radio-row">
+              <input type="radio" name="importColorMode" value="palette" checked>
+              Calées sur la palette de fils active (barre latérale)
+            </label>
+            <label class="radio-row">
+              <input type="radio" name="importColorMode" value="free">
+              Fidèles à l'image (couleurs libres)
+            </label>
+          </div>
+          <label class="radio-row" style="margin-top:10px">
+            <input type="checkbox" id="importAsNew" checked>
+            Créer une nouvelle grille (sinon, remplace la grille active)
+          </label>
+        </div>
+        <div class="import-preview">
+          <span class="field-label">Aperçu</span>
+          <canvas id="importPreviewCanvas"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button id="btnImportCancel">Annuler</button>
+      <button class="primary" id="btnImportApply" disabled>Appliquer à la grille</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- palettes de couleurs ----------
+  // Palette maison
+  var MAILLES_COLORS = [
+    ["#f5f1e6","Écru"], ["#e7ded0","Lin"], ["#c9bda6","Chanvre"], ["#9c8e78","Taupe"],
+    ["#6b5c4c","Noisette"], ["#3a2f26","Châtaigne"], ["#241c16","Réglisse"], ["#ffffff","Blanc neige"],
+    ["#d94f3c","Rouge piment"], ["#b8722e","Rouille"], ["#d99a3c","Moutarde"], ["#e6c229","Jaune safran"],
+    ["#7a9d3c","Vert mousse"], ["#3f7d5c","Vert sapin"], ["#2f5d5a","Bleu canard"], ["#3b6ea5","Bleu cobalt"],
+    ["#274870","Bleu marine"], ["#5b4b8a","Violet prune"], ["#9a5b9e","Mauve"], ["#c96f9a","Rose fuchsia"],
+    ["#e2a5b7","Rose poudré"], ["#e8846a","Corail"], ["#a33b2e","Brique"], ["#4a4238","Ardoise"]
+  ];
+
+  // DMC : données publiques du nuancier officiel des fils à broder DMC (456 teintes,
+  // codes et rendus hexadécimaux couramment publiés par les revendeurs et outils DMC).
+  var DMC_COLORS = [
+    ["#fff7e7","DMC Ecru · Ecru/off-white"], ["#7d4246","DMC 315 · Antique Mauve - MED DK"], ["#eeeeee","DMC Blanc · White"], 
+    ["#bc757f","DMC 316 · Antique Mauve - MED"], ["#fcfcff","DMC B5200 · Snow White"], ["#6d6469","DMC 317 · Pewter Gray"], 
+    ["#ffffff","DMC White · White"], ["#999b9d","DMC 318 · Steel Gray - LT"], ["#cf0053","DMC 150 · Red - BRIGHT"], 
+    ["#3a553b","DMC 319 · Pistachio Green - VY DK"], ["#ffcbd7","DMC 151 · Pink"], ["#608c59","DMC 320 · Pistachio Green - MED"], 
+    ["#e1a1a1","DMC 152 · Tawny - DK"], ["#bd1136","DMC 321 · Red"], ["#eac5eb","DMC 153 · Lilac"], ["#3a609d","DMC 322 · Baby Blue"], 
+    ["#4b233a","DMC 154 · Red - VY DK"], ["#ac1c37","DMC 326 · Rose - VY DK"], ["#9774b6","DMC 155 · Forget-me-not Blue"], 
+    ["#5e0f77","DMC 327 · Violet"], ["#8577b4","DMC 156 · Blue - MED"], ["#6e2e9b","DMC 333 · Blue Violet - VY DK"], 
+    ["#b5b8ea","DMC 157 · Blue - LT"], ["#6085b8","DMC 334 · Baby Blue - MED"], ["#393068","DMC 158 · Blue - DK"], 
+    ["#d63d57","DMC 335 · Rose"], ["#bcb5de","DMC 159 · Petrol Blue - LT"], ["#0c275e","DMC 336 · Blue"], 
+    ["#8178a9","DMC 160 · Petrol Blue - MED"], ["#996dc3","DMC 340 · Blue Violet - MED"], ["#60568b","DMC 161 · Petrol Blue - DK"], 
+    ["#a39ad7","DMC 341 · Blue Violet - LT"], ["#cae7f0","DMC 162 · Baby Blue - LT"], ["#ab1b33","DMC 347 · Salmon - VY DK"], 
+    ["#557a60","DMC 163 · Green"], ["#c62c38","DMC 349 · Coral - DK"], ["#bae4b6","DMC 164 · Green - LT"], 
+    ["#de3f40","DMC 350 · Coral - MED"], ["#e1f477","DMC 165 · Green - BRIGHT"], ["#ed625b","DMC 351 · Coral"], 
+    ["#adc238","DMC 166 · Lime Green"], ["#f78372","DMC 352 · Coral - LT"], ["#855d31","DMC 167 · Khaki Brown"], 
+    ["#fdb4a1","DMC 353 · Peach"], ["#b1aeb7","DMC 168 · Silver Gray"], ["#97382b","DMC 355 · Terra Cotta - DK"], 
+    ["#827d7d","DMC 169 · Pewter Gray"], ["#be5c4b","DMC 356 · Terra Cotta - MED"], ["#9442a7","DMC 208 · Lavender - VY DK"], 
+    ["#446b45","DMC 367 · Pistachio Green - DK"], ["#ba72c6","DMC 209 · Lavender - DK"], ["#7fc66d","DMC 368 · Pistachio Green - LT"], 
+    ["#d49fe1","DMC 210 · Lavender - MED"], ["#cdefa6","DMC 369 · Pistachio Green - VY LT"], ["#e5bded","DMC 211 · Lavender - LT"], 
+    ["#917245","DMC 370 · Mustard - MED"], ["#792631","DMC 221 · Shell Pink - VY DK"], ["#9f8352","DMC 371 · Mustard"], 
+    ["#bb6864","DMC 223 · Shell Pink - LT"], ["#ad9564","DMC 372 · Mustard - LT"], ["#e2a598","DMC 224 · Shell Pink - VY LT"], 
+    ["#813718","DMC 400 · Mahogany - DK"], ["#f8d9cd","DMC 225 · Shell Pink - ULT VY LT"], ["#ef9e74","DMC 402 · Mahogany - VY LT"], 
+    ["#6c3116","DMC 300 · Mahogany - VY DK"], ["#b77159","DMC 407 · Desert Sand - DK"], ["#aa5237","DMC 301 · Mahogany - MED"], 
+    ["#4a4749","DMC 413 · Pewter Gray - DK"], ["#a10c39","DMC 304 · Red - MED"], ["#766e72","DMC 414 · Steel Gray - DK"], 
+    ["#fde949","DMC 307 · Lemon"], ["#b8b9bd","DMC 415 · Pearl Gray"], ["#ba2044","DMC 309 · Rose - DK"], 
+    ["#855a30","DMC 420 · Hazelnut Brown - DK"], ["#000000","DMC 310 · Black"], ["#c99a67","DMC 422 · Hazelnut Brown - LT"], 
+    ["#002a64","DMC 311 · Blue - MED"], ["#73421e","DMC 433 · Brown - MED"], ["#1f3279","DMC 312 · Baby Blue - VY DK"], 
+    ["#8f5332","DMC 434 · Brown - LT"], ["#a96538","DMC 435 · Brown - VY LT"], ["#bf1c48","DMC 600 · Cranberry - VY DK"], 
+    ["#c78559","DMC 436 · Tan"], ["#c62a53","DMC 601 · Cranberry - DK"], ["#daa26f","DMC 437 · Tan - LT"], 
+    ["#d63f68","DMC 602 · Cranberry - MED"], ["#f5bc13","DMC 444 · Lemon - DK"], ["#ed5d84","DMC 603 · Cranberry"], 
+    ["#fcf999","DMC 445 · Lemon - LT"], ["#f793b2","DMC 604 · Cranberry - LT"], ["#887773","DMC 451 · Shell Gray - DK"], 
+    ["#fbacc4","DMC 605 · Cranberry - VY LT"], ["#ad9994","DMC 452 · Shell Gray - MED"], ["#f70f00","DMC 606 · Orange-red - BRIGHT"], 
+    ["#ccb8aa","DMC 453 · Shell Gray - LT"], ["#fd480c","DMC 608 · Orange - BRIGHT"], ["#5b6533","DMC 469 · Avocado Green"], 
+    ["#6b5039","DMC 610 · Drab Brown - DK"], ["#72813e","DMC 470 · Avocado Green - LT"], ["#7c5f46","DMC 611 · Drab Brown"], 
+    ["#9eb357","DMC 471 · Avocado Green - VY LT"], ["#a6885e","DMC 612 · Drab Brown - LT"], ["#d1de75","DMC 472 · Avocado Green - ULT LT"], 
+    ["#b99f72","DMC 613 · Drab Brown - VY LT"], ["#970b2c","DMC 498 · Red - DK"], ["#7f4232","DMC 632 · Desert Sand - ULT VY DK"], 
+    ["#1d362a","DMC 500 · Blue Green - VY DK"], ["#817868","DMC 640 · Beige Gray - VY DK"], ["#2f5446","DMC 501 · Blue Green - DK"], 
+    ["#958d79","DMC 642 · Beige Gray - DK"], ["#57826e","DMC 502 · Blue Green"], ["#c4bea6","DMC 644 · Beige Gray - MED"], 
+    ["#89b89f","DMC 503 · Blue Green - MED"], ["#5d5d54","DMC 645 · Beaver Gray - VY DK"], ["#acdac1","DMC 504 · Blue Green - VY LT"], 
+    ["#6b6860","DMC 646 · Beaver Gray - DK"], ["#ceddc1","DMC 505 · Grass Green - DK"], ["#908e85","DMC 647 · Beaver Gray - MED"], 
+    ["#216285","DMC 517 · Wedgewood - DK"], ["#a7a69f","DMC 648 · Beaver Gray - LT"], ["#50819c","DMC 518 · Wedgewood - LT"], 
+    ["#ce1b33","DMC 666 · Red - BRIGHT"], ["#94b7cb","DMC 519 · Sky Blue"], ["#ecbf7d","DMC 676 · Old Gold - LT"], 
+    ["#384526","DMC 520 · Fern Green - DK"], ["#f2dc9f","DMC 677 · Old Gold - VY LT"], ["#808b6e","DMC 522 · Fern Green"], 
+    ["#b07b46","DMC 680 · Old Gold - DK"], ["#959f7a","DMC 523 · Fern Green - LT"], ["#075b26","DMC 699 · Green"], 
+    ["#aea78e","DMC 524 · Fern Green - VY LT"], ["#076c34","DMC 700 · Green - BRIGHT"], ["#4b4b49","DMC 535 · Ash Gray - VY LT"], 
+    ["#217c36","DMC 701 · Green - LT"], ["#ead0b5","DMC 543 · Beige Brown - ULT VY LT"], ["#379130","DMC 702 · Kelly Green"], 
+    ["#580e5c","DMC 550 · Violet - VY DK"], ["#63b330","DMC 703 · Chartreuse"], ["#902f99","DMC 552 · Violet - MED"], 
+    ["#88c53a","DMC 704 · Chartreuse - BRIGHT"], ["#a449ac","DMC 553 · Violet"], ["#f6efda","DMC 712 · Cream"], 
+    ["#dc9cde","DMC 554 · Violet - LT"], ["#cb2089","DMC 718 · Plum"], ["#285e48","DMC 561 · Jade - VY DK"], 
+    ["#c83a24","DMC 720 · Orange Spice - DK"], ["#3b8c5a","DMC 562 · Jade - MED"], ["#f46440","DMC 721 · Orange Spice - MED"], 
+    ["#6ed39a","DMC 563 · Jade - LT"], ["#f98756","DMC 722 · Orange Spice - LT"], ["#95e4af","DMC 564 · Jade - VY LT"], 
+    ["#f9c15b","DMC 725 · Topaz"], ["#355f0b","DMC 580 · Moss Green - DK"], ["#fddb63","DMC 726 · Topaz - LT"], 
+    ["#838a29","DMC 581 · Moss Green"], ["#fde98b","DMC 727 · Topaz - VY LT"], ["#52adab","DMC 597 · Turquoise"], 
+    ["#f2ae3f","DMC 728 · Golden Yellow"], ["#97d8d3","DMC 598 · Turquoise - LT"], ["#ce9657","DMC 729 · Old Gold - MED"], 
+    ["#63520b","DMC 730 · Olive Green - VY DK"], ["#202754","DMC 803 · Blue - DEEP"], ["#6b580b","DMC 731 · Olive Green - DK"], 
+    ["#1d6c87","DMC 806 · Peacock Blue - DK"], ["#725c0c","DMC 732 · Olive Green"], ["#558b9e","DMC 807 · Peacock Blue"], 
+    ["#a78a44","DMC 733 · Olive Green - MED"], ["#919fd5","DMC 809 · Delft Blue"], ["#bb9c54","DMC 734 · Olive Green - LT"], 
+    ["#7fa0c6","DMC 813 · Blue - LT"], ["#e2b783","DMC 738 · Tan - VY LT"], ["#711033","DMC 814 · Garnet - DK"], 
+    ["#f2deb9","DMC 739 · Tan - ULT VY LT"], ["#800b34","DMC 815 · Garnet - MED"], ["#fd6f1a","DMC 740 · Tangerine"], 
+    ["#921238","DMC 816 · Garnet"], ["#fc8b10","DMC 741 · Tangerine - MED"], ["#bb1630","DMC 817 · Coral Red - VY DK"], 
+    ["#fdae3c","DMC 742 · Tangerine - LT"], ["#fededd","DMC 818 · Baby Pink"], ["#fdd769","DMC 743 · Yellow - MED"], 
+    ["#fcebde","DMC 819 · Baby Pink - LT"], ["#fee88d","DMC 744 · Yellow - PALE"], ["#151264","DMC 820 · Royal Blue - VY DK"], 
+    ["#feeba5","DMC 745 · Yellow - LT PALE"], ["#e8dfc7","DMC 822 · Beige Gray - LT"], ["#faf2d5","DMC 746 · Off White"], 
+    ["#000b44","DMC 823 · Blue - DK"], ["#cee9ea","DMC 747 · Sky Blue - VY LT"], ["#284779","DMC 824 · Blue - VY DK"], 
+    ["#f7c9b0","DMC 754 · Peach - LT"], ["#34588f","DMC 825 · Blue - DK"], ["#e99f83","DMC 758 · Terra Cotta - VY LT"], 
+    ["#5075a7","DMC 826 · Blue - MED"], ["#ec8880","DMC 760 · Salmon"], ["#a4c1de","DMC 827 · Blue - VY LT"], 
+    ["#f8b4ad","DMC 761 · Salmon - LT"], ["#c3d7e6","DMC 828 · Blue - ULT VY LT"], ["#d1d0d2","DMC 762 · Pearl Gray - VY LT"], 
+    ["#64480c","DMC 829 · Golden Olive - VY DK"], ["#d7efa7","DMC 772 · Yellow Green - VY LT"], ["#6e501d","DMC 830 · Golden Olive - DK"], 
+    ["#d4e3ef","DMC 775 · Baby Blue - VY LT"], ["#7c5f20","DMC 831 · Golden Olive - MED"], ["#fca8ad","DMC 776 · Pink - MED"], 
+    ["#9c7230","DMC 832 · Golden Olive"], ["#9b0042","DMC 777 · Red - DEEP"], ["#b99956","DMC 833 · Golden Olive - LT"], 
+    ["#dca6a4","DMC 778 · Antique Mauve - VY LT"], ["#d2b468","DMC 834 · Golden Olive - VY LT"], ["#53332d","DMC 779 · Brown"], 
+    ["#4a3021","DMC 838 · Beige Brown - VY DK"], ["#945026","DMC 780 · Topaz - ULT VY DK"], ["#5a3c2d","DMC 839 · Beige Brown - DK"], 
+    ["#a25f1f","DMC 781 · Topaz - VY DK"], ["#7a5939","DMC 840 · Beige Brown - MED"], ["#b26923","DMC 782 · Topaz - DK"], 
+    ["#a37d64","DMC 841 · Beige Brown - LT"], ["#d0883d","DMC 783 · Topaz - MED"], ["#cbb094","DMC 842 · Beige Brown - VY LT"], 
+    ["#2d2068","DMC 791 · Cornflower Blue - VY DK"], ["#494842","DMC 844 · Beaver Gray - ULT DK"], ["#454b8b","DMC 792 · Cornflower Blue - DK"], 
+    ["#995c30","DMC 868 · Hazel Nut Brown"], ["#7c82b5","DMC 793 · Cornflower Blue - MED"], ["#784c28","DMC 869 · Hazelnut Brown - VY DK"], 
+    ["#a0b2d7","DMC 794 · Cornflower Blue - LT"], ["#324233","DMC 890 · Pistachio Green - ULT DK"], ["#272276","DMC 796 · Royal Blue - DK"], 
+    ["#ee3246","DMC 891 · Carnation - DK"], ["#2b3288","DMC 797 · Royal Blue"], ["#f44753","DMC 892 · Carnation - MED"], 
+    ["#4e5ca7","DMC 798 · Delft Blue - DK"], ["#f66879","DMC 893 · Carnation - LT"], ["#6b7fc0","DMC 799 · Delft Blue - MED"], 
+    ["#fd95a3","DMC 894 · Carnation - VY LT"], ["#b5c7e9","DMC 800 · Delft Blue - PALE"], ["#344b2e","DMC 895 · Hunter Green - VY DK"], 
+    ["#60391d","DMC 801 · Coffee Brown - DK"], ["#532f1b","DMC 898 · Coffee Brown - VY DK"], ["#ea6b78","DMC 899 · Rose - MED"], 
+    ["#a8ebad","DMC 955 · Nile Green - LT"], ["#c63117","DMC 900 · Burnt Orange - DK"], ["#f7566d","DMC 956 · Geranium"], 
+    ["#651329","DMC 902 · Garnet - VY DK"], ["#fd99af","DMC 957 · Geranium - PALE"], ["#386324","DMC 904 · Parrot Green - VY DK"], 
+    ["#0db294","DMC 958 · Seagreen - DK"], ["#467924","DMC 905 · Parrot Green - DK"], ["#72d0b7","DMC 959 · Seagreen - MED"], 
+    ["#6c9e29","DMC 906 · Parrot Green - MED"], ["#de586c","DMC 961 · Dusty Rose - DK"], ["#9dc72d","DMC 907 · Parrot Green - LT"], 
+    ["#eb7183","DMC 962 · Dusty Rose - MED"], ["#106b43","DMC 909 · Emerald Green - VY DK"], ["#fdccd1","DMC 963 · Dusty Rose - ULT VY LT"], 
+    ["#10814e","DMC 910 · Emerald Green - DK"], ["#a5e4d4","DMC 964 · Seagreen - LT"], ["#109256","DMC 911 · Emerald Green - MED"], 
+    ["#94d28a","DMC 966 · Baby Green - MED"], ["#36b26b","DMC 912 · Emerald Green - LT"], ["#ffc2ac","DMC 967 · Peach - LT"], 
+    ["#55ca7d","DMC 913 · Nile Green - MED"], ["#fb6721","DMC 970 · Pumpkin - LT"], ["#95085a","DMC 915 · Plum - DK"], 
+    ["#fc670d","DMC 971 · Pumpkin"], ["#ac1071","DMC 917 · Plum - MED"], ["#fb9f11","DMC 972 · Canary - DEEP"], 
+    ["#883630","DMC 918 · Red Copper - DK"], ["#fccd2d","DMC 973 · Canary - BRIGHT"], ["#9b371b","DMC 919 · Red Copper"], 
+    ["#813c11","DMC 975 · Golden Brown - DK"], ["#ab4836","DMC 920 · Copper - MED"], ["#cf7532","DMC 976 · Golden Brown - MED"], 
+    ["#c0573d","DMC 921 · Copper"], ["#ec8f43","DMC 977 · Golden Brown - LT"], ["#dd6e4c","DMC 922 · Copper - LT"], 
+    ["#2e5230","DMC 986 · Forest Green - VY DK"], ["#384a4a","DMC 924 · Gray Green - VY DK"], ["#436838","DMC 987 · Forest Green - DK"], 
+    ["#617674","DMC 926 · Gray Green - MED"], ["#66924a","DMC 988 · Forest Green - MED"], ["#9fa8a5","DMC 927 · Gray Green - LT"], 
+    ["#71a74e","DMC 989 · Forest Green"], ["#c0c6c0","DMC 928 · Gray Green - VY LT"], ["#135f55","DMC 991 · Aquamarine - DK"], 
+    ["#495c6b","DMC 930 · Antique Blue - DK"], ["#42b59e","DMC 992 · Aquamarine - LT"], ["#667684","DMC 931 · Antique Blue - MED"], 
+    ["#62d8b6","DMC 993 · Aquamarine - VY LT"], ["#93a0af","DMC 932 · Antique Blue - LT"], ["#0061b0","DMC 995 · Electric Blue - DK"], 
+    ["#323324","DMC 934 · Avocado Green - BLACK"], ["#49a8eb","DMC 996 · Electric Blue - MED"], ["#383a2a","DMC 935 · Avocado Green - DK"], 
+    ["#655935","DMC 3011 · Khaki Green - DK"], ["#3f4227","DMC 936 · Avocado Green - VY DK"], ["#8b7b4e","DMC 3012 · Khaki Green - MED"], 
+    ["#434f2c","DMC 937 · Avocado Green - MED"], ["#afa97b","DMC 3013 · Khaki Green - LT"], ["#45271a","DMC 938 · Coffee Brown - ULT DK"], 
+    ["#50403b","DMC 3021 · Brown Gray - VY DK"], ["#09092f","DMC 939 · Blue - VY DK"], ["#848274","DMC 3022 · Brown Gray - MED"], 
+    ["#009a77","DMC 943 · Aquamarine - MED"], ["#a29b86","DMC 3023 · Brown Gray - LT"], ["#f6c19a","DMC 945 · Tawny"], 
+    ["#beb8ac","DMC 3024 · Brown Gray - VY LT"], ["#ed4115","DMC 946 · Burnt Orange - MED"], ["#423014","DMC 3031 · Mocha Brown - VY DK"], 
+    ["#fc4f16","DMC 947 · Burnt Orange"], ["#9d8868","DMC 3032 · Mocha Brown - MED"], ["#fde6d3","DMC 948 · Peach - VY LT"], 
+    ["#dbc7ad","DMC 3033 · Mocha Brown - VY LT"], ["#e5ac8d","DMC 950 · Desert Sand - LT"], ["#866a76","DMC 3041 · Antique Violet - MED"], 
+    ["#faddb6","DMC 951 · Tawny - LT"], ["#af98a0","DMC 3042 · Antique Violet - LT"], ["#6fda8a","DMC 954 · Nile Green"], 
+    ["#af8152","DMC 3045 · Yellow Beige - DK"], ["#ceb074","DMC 3046 · Yellow Beige - MED"], ["#c34c5c","DMC 3731 · Dusty Rose - VY DK"], 
+    ["#ead8ab","DMC 3047 · Yellow Beige - LT"], ["#ea7e86","DMC 3733 · Dusty Rose"], ["#4c4c1e","DMC 3051 · Green Gray - DK"], 
+    ["#71535d","DMC 3740 · Antique Violet - DK"], ["#787e5c","DMC 3052 · Green Gray - MED"], ["#cfc2c9","DMC 3743 · Antique Violet - VY LT"], 
+    ["#999d75","DMC 3053 · Green Gray"], ["#844ab5","DMC 3746 · Blue Violet - DK"], ["#ba7056","DMC 3064 · Desert Sand"], 
+    ["#d0c5ec","DMC 3747 · Blue Violet - VY LT"], ["#d2d2ca","DMC 3072 · Beaver Gray - VY LT"], ["#1d4552","DMC 3750 · Antique Blue - VY DK"], 
+    ["#fcf6b6","DMC 3078 · Golden Yellow - VY LT"], ["#bac9cc","DMC 3752 · Antique Blue - VY LT"], ["#adcde7","DMC 3325 · Baby Blue - LT"], 
+    ["#d9e6ec","DMC 3753 · Antique Blue - ULT VY LT"], ["#f9979c","DMC 3326 · Rose - LT"], ["#81a5d8","DMC 3755 · Baby Blue (?)"], 
+    ["#be444a","DMC 3328 · Salmon - DK"], ["#e9f4fa","DMC 3756 · Baby Blue"], ["#fd6b4f","DMC 3340 · Apricot - MED"], 
+    ["#467293","DMC 3760 · Wedgewood - MED"], ["#fd8e78","DMC 3341 · Apricot"], ["#b1d0df","DMC 3761 · Sky Blue - LT"], 
+    ["#40552e","DMC 3345 · Hunter Green - DK"], ["#175e78","DMC 3765 · Peacock Blue - VY DK"], ["#56743b","DMC 3346 · Hunter Green"], 
+    ["#4b8aa1","DMC 3766 · Peacock Blue - LT"], ["#6d9646","DMC 3347 · Yellow Green - MED"], ["#4c605f","DMC 3768 · Gray Green - DK"], 
+    ["#bedf74","DMC 3348 · Yellow Green - LT"], ["#fef1d8","DMC 3770 · Tawny - VY LT"], ["#aa3949","DMC 3350 · Dusty Rose - ULT DK"], 
+    ["#e8ac9b","DMC 3771 · Peach - DK"], ["#efa5ac","DMC 3354 · Dusty Rose - LT"], ["#995744","DMC 3772 · Desert Sand - VY DK"], 
+    ["#49523c","DMC 3362 · Pine Green - DK"], ["#cf866d","DMC 3773 · Desert Sand - MED"], ["#617451","DMC 3363 · Pine Green - MED"], 
+    ["#f3cfb4","DMC 3774 · Desert Sand - VY LT"], ["#8e9b6d","DMC 3364 · Pine Green"], ["#c96444","DMC 3776 · Mahogany - LT"], 
+    ["#36220e","DMC 3371 · Black Brown"], ["#922f25","DMC 3777 · Terra Cotta - VY DK"], ["#d94c9d","DMC 3607 · Plum - LT"], 
+    ["#d2705c","DMC 3778 · Terra Cotta - LT"], ["#ec81be","DMC 3608 · Plum - VY LT"], ["#f2ab95","DMC 3779 · Terra Cotta - ULT VY LT"], 
+    ["#f6b0df","DMC 3609 · Plum - ULT LT"], ["#593f2b","DMC 3781 · Mocha Brown - DK"], ["#79263b","DMC 3685 · Mauve - VY DK"], 
+    ["#b69d80","DMC 3782 · Mocha Brown - LT"], ["#b5455d","DMC 3687 · Mauve"], ["#62524c","DMC 3787 · Brown Gray - DK"], 
+    ["#dc7c86","DMC 3688 · Mauve - MED"], ["#6d5a4b","DMC 3790 · Beige Gray - ULT DK"], ["#f8bbc8","DMC 3689 · Mauve - LT"], 
+    ["#39393d","DMC 3799 · Pewter Gray - VY DK"], ["#f2494f","DMC 3705 · Melon - DK"], ["#e4353d","DMC 3801 · Melon - VY DK"], 
+    ["#fd6e70","DMC 3706 · Melon - MED"], ["#672a33","DMC 3802 · Antique Mauve - VY DK"], ["#fda0ae","DMC 3708 · Melon - LT"], 
+    ["#872a43","DMC 3803 · Mauve - DK"], ["#d95d5d","DMC 3712 · Salmon - MED"], ["#ce2b63","DMC 3804 · Cyclamen Pink - DK"], 
+    ["#fdd5d0","DMC 3713 · Salmon - VY LT"], ["#df3c73","DMC 3805 · Cyclamen Pink"], ["#fcafb9","DMC 3716 · Dusty Rose - VY LT"], 
+    ["#f15a91","DMC 3806 · Cyclamen Pink - LT"], ["#933b3d","DMC 3721 · Shell Pink - DK"], ["#4b599e","DMC 3807 · Cornflower Blue"], 
+    ["#a04b4c","DMC 3722 · Shell Pink - MED"], ["#03535c","DMC 3808 · Turquoise - ULT VY DK"], ["#95565c","DMC 3726 · Antique Mauve - DK"], 
+    ["#136a75","DMC 3809 · Turquoise - VY DK"], ["#da9ea6","DMC 3727 · Antique Mauve - LT"], ["#2d8d98","DMC 3810 · Turquoise - DK"], 
+    ["#a8e2e5","DMC 3811 · Turquoise - VY LT"], ["#7a7ec5","DMC 3839 · Lavender Blue - MED"], ["#07a184","DMC 3812 · Seagreen - VY DK"], 
+    ["#b2bdea","DMC 3840 · Lavender Blue - LT"], ["#86c3ab","DMC 3813 · Blue Green - LT"], ["#d9eaf2","DMC 3841 · Baby Blue - PALE"], 
+    ["#0b8673","DMC 3814 · Aquamarine"], ["#06506a","DMC 3842 · Wedgewood - DK"], ["#437259","DMC 3815 · Celadon Green - DK"], 
+    ["#28a3de","DMC 3843 · Electric Blue"], ["#60937a","DMC 3816 · Celadon Green"], ["#1f7fa0","DMC 3844 · Bright Turquoise - DK"], 
+    ["#81c6a4","DMC 3817 · Celadon Green - LT"], ["#2badd1","DMC 3845 · Bright Turquoise - MED"], ["#005d2e","DMC 3818 · Emerald Green - ULT VY DK"], 
+    ["#5eccec","DMC 3846 · Bright Turquoise - LT"], ["#ccc959","DMC 3819 · Moss Green - LT"], ["#186358","DMC 3847 · Teal Green - DK"], 
+    ["#dba53e","DMC 3820 · Straw - DK"], ["#207e72","DMC 3848 · Teal Green - MED"], ["#ebbb52","DMC 3821 · Straw"], 
+    ["#35b193","DMC 3849 · Teal Green - LT"], ["#f7d169","DMC 3822 · Straw - LT"], ["#208b46","DMC 3850 · Bright Green - DK"], 
+    ["#fef5cd","DMC 3823 · Yellow - ULT PALE"], ["#61bb84","DMC 3851 · Bright Green - LT"], ["#fcae99","DMC 3824 · Apricot - LT"], 
+    ["#e3a730","DMC 3852 · Straw - VY DK"], ["#fea370","DMC 3825 · Pumpkin - PALE"], ["#ef8125","DMC 3853 · Autumn Gold - DK"], 
+    ["#b16633","DMC 3826 · Golden Brown"], ["#fbac56","DMC 3854 · Autumn Gold - MED"], ["#eaa664","DMC 3827 · Golden Brown - PALE"], 
+    ["#fddfa0","DMC 3855 · Autumn Gold - LT"], ["#aa7c43","DMC 3828 · Hazelnut Brown"], ["#fdbe8e","DMC 3856 · Mahogany - ULT VY LT"], 
+    ["#a7671d","DMC 3829 · Old Gold - VY DK"], ["#6a2f26","DMC 3857 · Rosewood - DK"], ["#a94138","DMC 3830 · Terra Cotta"], 
+    ["#803a32","DMC 3858 · Rosewood - MED"], ["#c12b52","DMC 3831 · Raspberry - DK"], ["#ba7a6c","DMC 3859 · Rosewood - LT"], 
+    ["#e36370","DMC 3832 · Raspberry - MED"], ["#896362","DMC 3860 · Cocoa"], ["#ea8b96","DMC 3833 · Raspberry - LT"], 
+    ["#ac8583","DMC 3861 · Cocoa - LT"], ["#6a2258","DMC 3834 · Grape - DK"], ["#6e492a","DMC 3862 · Mocha Beige - DK"], 
+    ["#924d78","DMC 3835 · Grape - MED"], ["#94725d","DMC 3863 · Mocha Beige - MED"], ["#c597b9","DMC 3836 · Grape - LT"], 
+    ["#c9aa92","DMC 3864 · Mocha Beige - LT"], ["#8a2a8f","DMC 3837 · Lavender - ULT DK"], ["#fffdf9","DMC 3865 · Winter White"], 
+    ["#606bad","DMC 3838 · Lavender Blue - DK"], ["#f0e6d7","DMC 3866 · Mocha Brown - ULT VY LT"]
+  ];
+
+  // Katia ne publie pas de code hexadécimal officiel pour ses teintes : ces couleurs
+  // sont une approximation visuelle construite à partir des noms de coloris Katia Capri,
+  // pas une valeur garantie par le fabricant.
+  var KATIA_COLORS = [
+    ["#8a6a12","Katia 82200 · Dark mustard"], ["#c99a2e","Katia 82144 · Mustard"], ["#f5e08a","Katia 82180 · Light yellow"], 
+    ["#f7ecb8","Katia 82204 · Pastel yellow"], ["#f6e070","Katia 82118 · Light yellow"], ["#f5d327","Katia 82057 · Yellow"], 
+    ["#f3c948","Katia 82192 · Melon yellow"], ["#d97a5f","Katia 82201 · Dark salmon"], ["#d9611e","Katia 82143 · Deep orange"], 
+    ["#d6432b","Katia 82187 · Tomato red"], ["#c8862b","Katia 82168 · Ochre"], ["#b6531f","Katia 82166 · Rust"], 
+    ["#f0b98a","Katia 82181 · Pastel orange"], ["#f3b8c4","Katia 82169 · Light pink"], ["#d8748f","Katia 82121 · Medium rose"], 
+    ["#ef8fb0","Katia 82100 · Bubble-gum"], ["#d81f77","Katia 82115 · Fuchsia"], ["#e8629c","Katia 82138 · Light fuchsia"], 
+    ["#a3115a","Katia 82129 · Dark fuchsia"], ["#6e1f28","Katia 82203 · Maroon"], ["#9c4650","Katia 82150 · Light maroon"], 
+    ["#c81f2c","Katia 82059 · Red"], ["#ef6f5b","Katia 82164 · Coral"], ["#6a3d8f","Katia 82106 · Purple violet"], 
+    ["#e04b3c","Katia 82202 · Coral red"], ["#7a5a9e","Katia 82131 · Dark lilac"], ["#8456ab","Katia 82158 · Violet"], 
+    ["#4f2c72","Katia 82212 · Dark violet"], ["#5c2a4a","Katia 82172 · Pearl blackberry-Blackberry"], 
+    ["#5c5b58","Katia 82152 · Dark grey"], ["#9a9895","Katia 82128 · Grey"], ["#ece6da","Katia 82157 · Oyster white"], 
+    ["#ffffff","Katia 82050 · White"], ["#f4ecd8","Katia 82145 · Ivory"], ["#e8dcc0","Katia 82051 · Ecru"], 
+    ["#f2e8d8","Katia 82141 · Very light beige"], ["#e6d3ae","Katia 82067 · Light beige"], ["#f7e6e6","Katia 82199 · Pink white"], 
+    ["#f6d9de","Katia 82159 · Very light rose"], ["#f8d9bc","Katia 82154 · Very light orange"], ["#f4b374","Katia 82148 · Light orange"], 
+    ["#ef8b2e","Katia 82139 · Orange"], ["#a3223f","Katia 82182 · Raspberry red"], ["#b56a34","Katia 82205 · Copper"], 
+    ["#ec9186","Katia 82183 · Salmon pink"], ["#e0879a","Katia 82184 · Rose"], ["#ecdcd6","Katia 82211 · Porcelain"], 
+    ["#b08aa0","Katia 82176 · Mauve"], ["#c69a5e","Katia 82188 · Camel"], ["#e8875c","Katia 82167 · Salmon orange"], 
+    ["#a49c8e","Katia 82053 · Stone grey"], ["#b39776","Katia 82126 · Pale brown"], ["#d9c093","Katia 82210 · Sand"], 
+    ["#a1815e","Katia 82186 · Brown beige"], ["#8a6440","Katia 82116 · Fawn brown"], ["#c4ab8f","Katia 82163 · Light mink"], 
+    ["#3f8a8a","Katia 82161 · Green blue"], ["#1f6fa8","Katia 82208 · Persian blue"], ["#24a0a0","Katia 82101 · Turquoise"], 
+    ["#1a94c4","Katia 82207 · Cyan Blue"], ["#a8d3ea","Katia 82097 · Light blue"], ["#bfe0ef","Katia 82196 · Light sky blue"], 
+    ["#4a6f9e","Katia 82103 · Jeans"], ["#2d5f9e","Katia 82155 · Medium blue"], ["#1c2f52","Katia 82146 · Night blue"], 
+    ["#1c3f6e","Katia 82066 · Dark blue"], ["#8c8478","Katia 82178 · Squirrel grey"], ["#a79bd1","Katia 82206 · Lavender"], 
+    ["#b391ab","Katia 82195 · Mauve"], ["#d3b8c8","Katia 82194 · Light mauve"], ["#b9d3e8","Katia 82198 · Pastel blue"], 
+    ["#6fb3d8","Katia 82117 · Sky blue"], ["#8ebf4e","Katia 82197 · May green"], ["#6ec13e","Katia 82149 · Luminous green"], 
+    ["#3fbf9e","Katia 82171 · Mint turquoise"], ["#3f9142","Katia 82130 · Green"], ["#1f8f5c","Katia 82209 · Emerald"], 
+    ["#245c33","Katia 82151 · Dark green"], ["#1f4a34","Katia 82185 · Pine green"], ["#4f9e4a","Katia 82137 · Medium green"], 
+    ["#9fd47a","Katia 82170 · Light green"], ["#a8c46a","Katia 82105 · Pistachio"], ["#8a8a52","Katia 82213 · Khaki"], 
+    ["#6f7a34","Katia 82175 · Olive green"], ["#6e4a2e","Katia 82189 · Brown"], ["#8a4f26","Katia 82162 · Copper brown"], 
+    ["#4a3220","Katia 82127 · Dark brown"], ["#2c1e16","Katia 82190 · Black brown"], ["#1a1a1a","Katia 82056 · Black"], 
+    ["#1c4a34","Katia 82156 · Bottle green"], ["#b8e8d0","Katia 82179 · Mint green"], ["#1f8fb0","Katia 82173 · Turquoise blue"], 
+    ["#dfe8d0","Katia 82083 · Whitish green"], ["#e6ecd8","Katia 82174 · Whitish green"], ["#5f8f3f","Katia 82177 · Fern green"]
+  ];
+
+
+  var BRANDS = {
+    mailles: { label: "Palette maison (24)", colors: MAILLES_COLORS },
+    dmc: { label: "DMC — fils à broder (456)", colors: DMC_COLORS },
+    katia: { label: "Katia Capri — coton crochet (95, teintes approx.)", colors: KATIA_COLORS }
+  };
+  var BRAND_ORDER = ["mailles", "dmc", "katia"];
+
+  // ---------- mise en page du plan de travail ----------
+  var HEADER_H = 24;   // hauteur de l'en-tête (poignée de déplacement) de chaque grille
+  var BLOCK_GAP = 36;  // espace entre deux grilles ajoutées automatiquement
+  var CANVAS_PAD = 30; // marge autour du plan de travail
+
+  // ---------- état ----------
+  var state = {
+    cellSize: 22,
+    baseCellSize: 22,
+    blocks: [],       // { id, cols, rows, x, y, data }
+    activeId: null,
+    nextBlockId: 1,
+    tool: "pen",
+    color: "#2f5d5a",
+    colorName: "Bleu canard",
+    recent: [],
+    painting: false,
+    paintingColorValue: null,
+    strokeSnapshot: null,
+    dragBlock: null,
+    hoverRegion: null,
+    selecting: null,   // sélection en cours de tracé : { blockId, r0, c0, r1, c1 }
+    selection: null,   // sélection validée : { blockId, r0, c0, r1, c1 } (r0<=r1, c0<=c1)
+    clipboard: null,   // { cols, rows, data } copié depuis une sélection
+    brand: "mailles",  // marque de fils actuellement affichée dans la palette
+    customPalette: []  // couleurs perso, en hex
+  };
+  var zoomLevels = [8,10,12,14,16,18,20,22,26,30,36,42,48];
+
+  var history = [];
+  var future = [];
+  var HISTORY_LIMIT = 60;
+
+  function makeBlock(cols, rows, x, y, data){
+    var id = state.nextBlockId++;
+    return { id: id, cols: cols, rows: rows, x: x, y: y, data: data || new Array(cols * rows).fill(null) };
+  }
+  function getActiveBlock(){
+    for(var i = 0; i < state.blocks.length; i++){ if(state.blocks[i].id === state.activeId) return state.blocks[i]; }
+    return state.blocks[0] || null;
+  }
+  function getBlockById(id){
+    for(var i = 0; i < state.blocks.length; i++){ if(state.blocks[i].id === id) return state.blocks[i]; }
+    return null;
+  }
+  function boundingBox(){
+    var maxX = 0, maxY = 0;
+    state.blocks.forEach(function(b){
+      var w = b.cols * state.cellSize + ruler;
+      var h = HEADER_H + b.rows * state.cellSize + ruler;
+      maxX = Math.max(maxX, b.x + w);
+      maxY = Math.max(maxY, b.y + h);
+    });
+    return { w: maxX, h: maxY };
+  }
+  function nextBlockPosition(){
+    var box = boundingBox();
+    return { x: box.w > 0 ? box.w + BLOCK_GAP : 0, y: 0 };
+  }
+  function syncSizeInputs(){
+    var b = getActiveBlock();
+    if(!b) return;
+    inputCols.value = b.cols;
+    inputRows.value = b.rows;
+  }
+
+  // ---------- éléments ----------
+  var canvas = document.getElementById("gridCanvas");
+  var ctx = canvas.getContext("2d");
+  var viewport = document.getElementById("viewport");
+  var inputCols = document.getElementById("inputCols");
+  var inputRows = document.getElementById("inputRows");
+  var btnApplySize = document.getElementById("btnApplySize");
+  var btnClear = document.getElementById("btnClear");
+  var btnAddBlock = document.getElementById("btnAddBlock");
+  var btnDeleteBlock = document.getElementById("btnDeleteBlock");
+  var statBlocks = document.getElementById("statBlocks");
+  var toolPen = document.getElementById("toolPen");
+  var toolEraser = document.getElementById("toolEraser");
+  var toolPicker = document.getElementById("toolPicker");
+  var toolBucket = document.getElementById("toolBucket");
+  var toolSelect = document.getElementById("toolSelect");
+  var toolPaste = document.getElementById("toolPaste");
+  var selectionInfo = document.getElementById("selectionInfo");
+  var clipboardInfo = document.getElementById("clipboardInfo");
+  var btnCopySelection = document.getElementById("btnCopySelection");
+  var btnClearSelection = document.getElementById("btnClearSelection");
+  var currentSwatch = document.getElementById("currentSwatch");
+  var currentColorName = document.getElementById("currentColorName");
+  var currentColorHex = document.getElementById("currentColorHex");
+  var colorPicker = document.getElementById("colorPicker");
+  var hexInput = document.getElementById("hexInput");
+  var btnApplyHex = document.getElementById("btnApplyHex");
+  var brandSelect = document.getElementById("brandSelect");
+  var paletteFilter = document.getElementById("paletteFilter");
+  var paletteSwatches = document.getElementById("paletteSwatches");
+  var recentSwatches = document.getElementById("recentSwatches");
+  var customSwatches = document.getElementById("customSwatches");
+  var customColorPicker = document.getElementById("customColorPicker");
+  var btnAddCustomColor = document.getElementById("btnAddCustomColor");
+  var statDims = document.getElementById("statDims");
+  var statFilled = document.getElementById("statFilled");
+  var statColors = document.getElementById("statColors");
+  var btnUndo = document.getElementById("btnUndo");
+  var btnRedo = document.getElementById("btnRedo");
+  var btnZoomIn = document.getElementById("btnZoomIn");
+  var btnZoomOut = document.getElementById("btnZoomOut");
+  var zoomPct = document.getElementById("zoomPct");
+  var btnExportJson = document.getElementById("btnExportJson");
+  var btnImportJson = document.getElementById("btnImportJson");
+  var btnExportPng = document.getElementById("btnExportPng");
+  var btnImportImage = document.getElementById("btnImportImage");
+  var fileInputJson = document.getElementById("fileInputJson");
+  var fileInputImage = document.getElementById("fileInputImage");
+  var importModal = document.getElementById("importModal");
+  var btnImportClose = document.getElementById("btnImportClose");
+  var btnImportCancel = document.getElementById("btnImportCancel");
+  var btnImportApply = document.getElementById("btnImportApply");
+  var importSourceImg = document.getElementById("importSourceImg");
+  var importDropzone = document.getElementById("importDropzone");
+  var importDropzoneMsg = document.getElementById("importDropzoneMsg");
+  var btnImportChoose = document.getElementById("btnImportChoose");
+  var importCols = document.getElementById("importCols");
+  var importRows = document.getElementById("importRows");
+  var importAsNew = document.getElementById("importAsNew");
+  var importPreviewCanvas = document.getElementById("importPreviewCanvas");
+
+  // ---------- persistance (confort local uniquement) ----------
+  var STORAGE_KEY = "mailles-grid-v2";
+  function saveLocal(){
+    try{
+      var payload = JSON.stringify({
+        cellSize: state.cellSize,
+        activeId: state.activeId,
+        blocks: state.blocks.map(function(b){ return { id:b.id, cols:b.cols, rows:b.rows, x:b.x, y:b.y, data:b.data }; })
+      });
+      window.localStorage.setItem(STORAGE_KEY, payload);
+    }catch(e){ /* stockage indisponible : on continue sans persister */ }
+  }
+  function loadLocal(){
+    try{
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        var parsed = JSON.parse(raw);
+        if(parsed && Array.isArray(parsed.blocks) && parsed.blocks.length){
+          var maxId = 0;
+          var blocks = parsed.blocks.map(function(b){
+            if(!b || !Array.isArray(b.data) || b.cols * b.rows !== b.data.length) return null;
+            maxId = Math.max(maxId, b.id || 0);
+            return { id: b.id, cols: b.cols, rows: b.rows, x: b.x || 0, y: b.y || 0, data: b.data };
+          }).filter(Boolean);
+          if(blocks.length){
+            state.blocks = blocks;
+            state.nextBlockId = maxId + 1;
+            state.activeId = parsed.activeId && blocks.some(function(b){ return b.id === parsed.activeId; }) ? parsed.activeId : blocks[0].id;
+            if(parsed.cellSize) state.cellSize = parsed.cellSize;
+            return true;
+          }
+        }
+      }
+      // repli : ancien format à une seule grille
+      var legacy = window.localStorage.getItem("mailles-grid-v1");
+      if(legacy){
+        var lp = JSON.parse(legacy);
+        if(lp && Array.isArray(lp.data) && lp.cols * lp.rows === lp.data.length){
+          var b = makeBlock(lp.cols, lp.rows, 0, 0, lp.data);
+          state.blocks = [b];
+          state.activeId = b.id;
+          if(lp.cellSize) state.cellSize = lp.cellSize;
+          return true;
+        }
+      }
+      return false;
+    }catch(e){ return false; }
+  }
+
+  // ---------- couleurs ----------
+  function hexToName(hex){
+    var h = hex.toLowerCase();
+    for(var i = 0; i < BRAND_ORDER.length; i++){
+      var found = BRANDS[BRAND_ORDER[i]].colors.find(function(p){ return p[0].toLowerCase() === h; });
+      if(found) return found[1];
+    }
+    return "Couleur personnalisée";
+  }
+  function isValidHex(v){ return /^#[0-9a-fA-F]{6}$/.test(v); }
+
+  function setCurrentColor(hex, name){
+    state.color = hex;
+    state.colorName = name || hexToName(hex);
+    currentSwatch.style.background = hex;
+    currentColorName.textContent = state.colorName;
+    currentColorHex.textContent = hex.toUpperCase();
+    colorPicker.value = hex;
+    hexInput.value = hex.toUpperCase();
+    highlightActiveSwatch();
+    pushRecent(hex);
+  }
+
+  function pushRecent(hex){
+    var idx = state.recent.indexOf(hex);
+    if(idx !== -1) state.recent.splice(idx, 1);
+    state.recent.unshift(hex);
+    if(state.recent.length > 12) state.recent.length = 12;
+    renderRecent();
+  }
+
+  function renderBrandSelect(){
+    brandSelect.innerHTML = "";
+    BRAND_ORDER.forEach(function(key){
+      var opt = document.createElement("option");
+      opt.value = key;
+      opt.textContent = BRANDS[key].label;
+      brandSelect.appendChild(opt);
+    });
+    brandSelect.value = state.brand;
+  }
+
+  function renderPalette(){
+    paletteSwatches.innerHTML = "";
+    var colors = BRANDS[state.brand].colors;
+    var q = paletteFilter.value.trim().toLowerCase();
+    if(q){
+      colors = colors.filter(function(p){ return p[1].toLowerCase().indexOf(q) !== -1; });
+    }
+    if(colors.length === 0){
+      var hint = document.createElement("span");
+      hint.className = "empty-hint";
+      hint.textContent = "Aucune couleur ne correspond au filtre";
+      paletteSwatches.appendChild(hint);
+      return;
+    }
+    colors.forEach(function(p){
+      var btn = document.createElement("button");
+      btn.className = "swatch";
+      btn.style.background = p[0];
+      btn.title = p[1] + " · " + p[0].toUpperCase();
+      btn.setAttribute("aria-pressed", "false");
+      btn.dataset.hex = p[0];
+      btn.addEventListener("click", function(){ setCurrentColor(p[0], p[1]); });
+      paletteSwatches.appendChild(btn);
+    });
+    highlightActiveSwatch();
+  }
+
+  function renderRecent(){
+    recentSwatches.innerHTML = "";
+    if(state.recent.length === 0){
+      var hint = document.createElement("span");
+      hint.className = "empty-hint";
+      hint.textContent = "Aucune pour l'instant";
+      recentSwatches.appendChild(hint);
+      return;
+    }
+    state.recent.forEach(function(hex){
+      var btn = document.createElement("button");
+      btn.className = "swatch";
+      btn.style.background = hex;
+      btn.title = hex.toUpperCase();
+      btn.addEventListener("click", function(){ setCurrentColor(hex, hexToName(hex)); });
+      recentSwatches.appendChild(btn);
+    });
+  }
+
+  // ---------- palette perso ----------
+  var CUSTOM_PALETTE_KEY = "mailles-custom-palette-v1";
+  function saveCustomPalette(){
+    try{ window.localStorage.setItem(CUSTOM_PALETTE_KEY, JSON.stringify(state.customPalette)); }
+    catch(e){ /* stockage indisponible */ }
+  }
+  function loadCustomPalette(){
+    try{
+      var raw = window.localStorage.getItem(CUSTOM_PALETTE_KEY);
+      if(!raw) return;
+      var parsed = JSON.parse(raw);
+      if(Array.isArray(parsed)) state.customPalette = parsed.filter(isValidHex);
+    }catch(e){ /* on repart d'une palette perso vide */ }
+  }
+
+  function renderCustom(){
+    customSwatches.innerHTML = "";
+    if(state.customPalette.length === 0){
+      var hint = document.createElement("span");
+      hint.className = "empty-hint";
+      hint.textContent = "Aucune pour l'instant";
+      customSwatches.appendChild(hint);
+      return;
+    }
+    state.customPalette.forEach(function(hex){
+      var btn = document.createElement("button");
+      btn.className = "swatch";
+      btn.style.background = hex;
+      btn.title = hex.toUpperCase() + " (double-clic pour retirer)";
+      btn.addEventListener("click", function(){ setCurrentColor(hex, hexToName(hex)); });
+      btn.addEventListener("dblclick", function(){
+        var idx = state.customPalette.indexOf(hex);
+        if(idx !== -1){
+          state.customPalette.splice(idx, 1);
+          saveCustomPalette();
+          renderCustom();
+        }
+      });
+      customSwatches.appendChild(btn);
+    });
+  }
+
+  function addCustomColor(hex){
+    if(!isValidHex(hex)) return;
+    var h = hex.toLowerCase();
+    if(state.customPalette.some(function(c){ return c.toLowerCase() === h; })) return;
+    state.customPalette.push(hex);
+    saveCustomPalette();
+    renderCustom();
+  }
+
+  function highlightActiveSwatch(){
+    var all = paletteSwatches.querySelectorAll(".swatch");
+    all.forEach(function(el){
+      el.setAttribute("aria-pressed", el.dataset.hex.toLowerCase() === state.color.toLowerCase() ? "true" : "false");
+    });
+  }
+
+  // ---------- outils ----------
+  function setTool(tool){
+    state.tool = tool;
+    toolPen.setAttribute("aria-pressed", tool === "pen" ? "true" : "false");
+    toolEraser.setAttribute("aria-pressed", tool === "eraser" ? "true" : "false");
+    toolPicker.setAttribute("aria-pressed", tool === "picker" ? "true" : "false");
+    toolBucket.setAttribute("aria-pressed", tool === "bucket" ? "true" : "false");
+    toolSelect.setAttribute("aria-pressed", tool === "select" ? "true" : "false");
+    toolPaste.setAttribute("aria-pressed", tool === "paste" ? "true" : "false");
+    canvas.style.cursor =
+      tool === "eraser" ? "cell" :
+      tool === "picker" ? "copy" :
+      tool === "bucket" ? "pointer" :
+      tool === "select" ? "crosshair" :
+      tool === "paste" ? "copy" :
+      "crosshair";
+  }
+
+  // ---------- plan de travail : dimensionnement & dessin ----------
+  var ruler = 0; // taille de la marge de numérotation, recalculée
+  function computeRuler(){
+    ruler = state.cellSize >= 12 ? 20 : 0;
+  }
+
+  function resizeCanvasElement(){
+    computeRuler();
+    var box = boundingBox();
+    var w = box.w + CANVAS_PAD;
+    var h = box.h + CANVAS_PAD;
+    var dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function roundRectPath(x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  function drawBlock(block){
+    var surface = cssVar("--surface"), surface2 = cssVar("--surface-2"), surface3 = cssVar("--surface-3");
+    var lineColor = cssVar("--line"), lineStrong = cssVar("--line-strong");
+    var inkFaint = cssVar("--ink-faint"), accent = cssVar("--accent"), accentSoft = cssVar("--accent-soft");
+
+    var w = block.cols * state.cellSize + ruler;
+    var h = HEADER_H + block.rows * state.cellSize + ruler;
+    var isActive = block.id === state.activeId;
+
+    // carte (fond + ombre)
+    ctx.save();
+    ctx.shadowColor = "rgba(38,33,28,.22)";
+    ctx.shadowBlur = 14;
+    ctx.shadowOffsetY = 5;
+    ctx.fillStyle = surface;
+    roundRectPath(block.x, block.y, w, h, 8);
+    ctx.fill();
+    ctx.restore();
+
+    // en-tête (poignée de déplacement)
+    ctx.save();
+    roundRectPath(block.x, block.y, w, h, 8);
+    ctx.clip();
+    ctx.fillStyle = isActive ? accentSoft : surface2;
+    ctx.fillRect(block.x, block.y, w, HEADER_H);
+    ctx.restore();
+
+    var idx = state.blocks.indexOf(block);
+    ctx.fillStyle = isActive ? accent : inkFaint;
+    ctx.font = "500 11px 'Work Sans', sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillText("⠿ Grille " + (idx + 1) + "  ·  " + block.cols + "×" + block.rows, block.x + 8, block.y + HEADER_H / 2 + 1);
+
+    if(state.blocks.length > 1){
+      ctx.strokeStyle = isActive ? accent : inkFaint;
+      ctx.lineWidth = 1.4;
+      var cx = block.x + w - 14, cy = block.y + HEADER_H / 2;
+      ctx.beginPath();
+      ctx.moveTo(cx - 4, cy - 4); ctx.lineTo(cx + 4, cy + 4);
+      ctx.moveTo(cx + 4, cy - 4); ctx.lineTo(cx - 4, cy + 4);
+      ctx.stroke();
+    }
+
+    if(isActive){
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2;
+      roundRectPath(block.x + 1, block.y + 1, w - 2, h - 2, 8);
+      ctx.stroke();
+    }
+
+    // contenu de la grille
+    var ox = block.x, oy = block.y + HEADER_H;
+    if(ruler > 0){
+      ctx.fillStyle = surface2;
+      ctx.fillRect(ox, oy, w, ruler);
+      ctx.fillRect(ox, oy, ruler, h - HEADER_H);
+    }
+    for(var r = 0; r < block.rows; r++){
+      for(var c = 0; c < block.cols; c++){
+        var cidx = r * block.cols + c;
+        var color = block.data[cidx];
+        var x = ox + ruler + c * state.cellSize;
+        var y = oy + ruler + r * state.cellSize;
+        if(color){
+          ctx.fillStyle = color;
+          ctx.fillRect(x, y, state.cellSize, state.cellSize);
+        } else if(state.cellSize >= 9){
+          ctx.fillStyle = surface3;
+          var d = Math.max(1, state.cellSize * 0.06);
+          ctx.beginPath();
+          ctx.arc(x + state.cellSize/2, y + state.cellSize/2, d, 0, Math.PI*2);
+          ctx.fill();
+        }
+      }
+    }
+
+    ctx.lineWidth = 1;
+    for(var cc = 0; cc <= block.cols; cc++){
+      var gx = ox + ruler + cc * state.cellSize + 0.5;
+      ctx.strokeStyle = (cc % 10 === 0) ? lineStrong : lineColor;
+      ctx.beginPath();
+      ctx.moveTo(gx, oy + ruler);
+      ctx.lineTo(gx, oy + ruler + block.rows * state.cellSize);
+      ctx.stroke();
+    }
+    for(var rr = 0; rr <= block.rows; rr++){
+      var gy = oy + ruler + rr * state.cellSize + 0.5;
+      ctx.strokeStyle = (rr % 10 === 0) ? lineStrong : lineColor;
+      ctx.beginPath();
+      ctx.moveTo(ox + ruler, gy);
+      ctx.lineTo(ox + ruler + block.cols * state.cellSize, gy);
+      ctx.stroke();
+    }
+
+    if(ruler > 0){
+      ctx.fillStyle = inkFaint;
+      ctx.font = "9px 'IBM Plex Mono', monospace";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      for(var lc = 0; lc < block.cols; lc++){
+        if((lc + 1) % 10 === 0 || lc === 0){
+          ctx.fillText(String(lc + 1), ox + ruler + lc * state.cellSize + state.cellSize/2, oy + ruler/2);
+        }
+      }
+      ctx.textAlign = "right";
+      for(var lr = 0; lr < block.rows; lr++){
+        if((lr + 1) % 10 === 0 || lr === 0){
+          ctx.fillText(String(lr + 1), ox + ruler - 5, oy + ruler + lr * state.cellSize + state.cellSize/2);
+        }
+      }
+    }
+
+    // sélection en cours
+    if(state.selection && state.selection.blockId === block.id){
+      var s = state.selection;
+      var sx = ox + ruler + s.c0 * state.cellSize;
+      var sy = oy + ruler + s.r0 * state.cellSize;
+      var sw = (s.c1 - s.c0 + 1) * state.cellSize;
+      var sh = (s.r1 - s.r0 + 1) * state.cellSize;
+      ctx.save();
+      ctx.fillStyle = accentSoft;
+      ctx.fillRect(sx, sy, sw, sh);
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 1.6;
+      ctx.setLineDash([4, 3]);
+      ctx.strokeRect(sx + 0.8, sy + 0.8, sw - 1.6, sh - 1.6);
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+  }
+
+  function drawAll(){
+    var box = boundingBox();
+    ctx.clearRect(0, 0, box.w + CANVAS_PAD, box.h + CANVAS_PAD);
+    state.blocks.forEach(drawBlock);
+  }
+
+  function redraw(){
+    resizeCanvasElement();
+    drawAll();
+  }
+
+  // ---------- statistiques ----------
+  function refreshStats(){
+    var b = getActiveBlock();
+    if(!b) return;
+    statDims.textContent = b.cols + " × " + b.rows;
+    var filled = 0;
+    var colorSet = {};
+    for(var i = 0; i < b.data.length; i++){
+      var v = b.data[i];
+      if(v){ filled++; colorSet[v] = true; }
+    }
+    statFilled.textContent = filled + " / " + b.data.length;
+    statColors.textContent = Object.keys(colorSet).length;
+    statBlocks.textContent = state.blocks.length;
+  }
+
+  // ---------- historique (instantanés de tout le plan de travail) ----------
+  function cloneBlocks(){
+    return state.blocks.map(function(b){ return { id:b.id, cols:b.cols, rows:b.rows, x:b.x, y:b.y, data:b.data.slice() }; });
+  }
+  function snapshotWorkspace(){ return { blocks: cloneBlocks(), activeId: state.activeId }; }
+  function restoreSnapshot(s){
+    state.blocks = s.blocks.map(function(b){ return { id:b.id, cols:b.cols, rows:b.rows, x:b.x, y:b.y, data:b.data.slice() }; });
+    state.activeId = state.blocks.some(function(b){ return b.id === s.activeId; }) ? s.activeId : (state.blocks[0] ? state.blocks[0].id : null);
+  }
+
+  function commitHistory(before){
+    if(JSON.stringify(before) === JSON.stringify(snapshotWorkspace())) return;
+    history.push(before);
+    if(history.length > HISTORY_LIMIT) history.shift();
+    future = [];
+    updateHistoryButtons();
+    saveLocal();
+  }
+
+  function undo(){
+    if(history.length === 0) return;
+    var prev = history.pop();
+    future.push(snapshotWorkspace());
+    restoreSnapshot(prev);
+    syncSizeInputs();
+    validateSelection();
+    redraw();
+    refreshStats();
+    updateHistoryButtons();
+    saveLocal();
+  }
+
+  function redo(){
+    if(future.length === 0) return;
+    var next = future.pop();
+    history.push(snapshotWorkspace());
+    restoreSnapshot(next);
+    syncSizeInputs();
+    validateSelection();
+    redraw();
+    refreshStats();
+    updateHistoryButtons();
+    saveLocal();
+  }
+
+  function updateHistoryButtons(){
+    btnUndo.disabled = history.length === 0;
+    btnRedo.disabled = future.length === 0;
+  }
+
+  // ---------- peinture & repérage des grilles sur le plan ----------
+  function pointFromEvent(evt){
+    var rect = canvas.getBoundingClientRect();
+    return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
+  }
+
+  // Détermine ce qui se trouve sous un point du plan de travail : l'en-tête
+  // (poignée de déplacement), le bouton × de suppression, une maille, ou la
+  // marge de numérotation d'une grille.
+  function hitTest(px, py){
+    for(var i = state.blocks.length - 1; i >= 0; i--){
+      var b = state.blocks[i];
+      var w = b.cols * state.cellSize + ruler;
+      var h = HEADER_H + b.rows * state.cellSize + ruler;
+      if(px < b.x || px >= b.x + w || py < b.y || py >= b.y + h) continue;
+      if(py < b.y + HEADER_H){
+        if(state.blocks.length > 1 && px >= b.x + w - 24) return { block: b, region: "delete" };
+        return { block: b, region: "header" };
+      }
+      var lx = px - b.x - ruler, ly = py - b.y - HEADER_H - ruler;
+      var c = Math.floor(lx / state.cellSize), r = Math.floor(ly / state.cellSize);
+      if(c < 0 || c >= b.cols || r < 0 || r >= b.rows) return { block: b, region: "margin" };
+      return { block: b, region: "grid", r: r, c: c };
+    }
+    return null;
+  }
+
+  function setActiveBlock(id){
+    if(state.activeId === id) return;
+    state.activeId = id;
+    syncSizeInputs();
+  }
+
+  // Convertit un point du plan de travail en cellule de "block", en la
+  // limitant à ses bornes (utile pour un tracé de sélection qui déborde).
+  function cellInBlockClamped(block, px, py){
+    var lx = px - block.x - ruler, ly = py - block.y - HEADER_H - ruler;
+    var c = Math.floor(lx / state.cellSize), r = Math.floor(ly / state.cellSize);
+    c = Math.max(0, Math.min(block.cols - 1, c));
+    r = Math.max(0, Math.min(block.rows - 1, r));
+    return { r: r, c: c };
+  }
+
+  function normalizeSelection(sel){
+    return {
+      blockId: sel.blockId,
+      r0: Math.min(sel.r0, sel.r1), r1: Math.max(sel.r0, sel.r1),
+      c0: Math.min(sel.c0, sel.c1), c1: Math.max(sel.c0, sel.c1)
+    };
+  }
+
+  // Vide la sélection si elle pointe vers une grille supprimée ou redimensionnée.
+  function validateSelection(){
+    if(!state.selection) return;
+    var b = getBlockById(state.selection.blockId);
+    if(!b || state.selection.r1 >= b.rows || state.selection.c1 >= b.cols){
+      state.selection = null;
+      updateSelectionUI();
+    }
+  }
+
+  function updateSelectionUI(){
+    selectionInfo.textContent = state.selection
+      ? ((state.selection.c1 - state.selection.c0 + 1) + " × " + (state.selection.r1 - state.selection.r0 + 1))
+      : "Aucune";
+    clipboardInfo.textContent = state.clipboard ? (state.clipboard.cols + " × " + state.clipboard.rows) : "Vide";
+    btnCopySelection.disabled = !state.selection;
+    btnClearSelection.disabled = !state.selection;
+  }
+
+  function copySelection(){
+    if(!state.selection) return;
+    var block = getBlockById(state.selection.blockId);
+    if(!block) return;
+    var s = state.selection;
+    var cols = s.c1 - s.c0 + 1, rows = s.r1 - s.r0 + 1;
+    var data = new Array(cols * rows);
+    for(var r = 0; r < rows; r++){
+      for(var c = 0; c < cols; c++){
+        data[r * cols + c] = block.data[(s.r0 + r) * block.cols + (s.c0 + c)];
+      }
+    }
+    state.clipboard = { cols: cols, rows: rows, data: data };
+    updateSelectionUI();
+  }
+
+  function clearSelectionContents(){
+    if(!state.selection) return;
+    var block = getBlockById(state.selection.blockId);
+    if(!block) return;
+    var s = state.selection;
+    var before = snapshotWorkspace();
+    for(var r = s.r0; r <= s.r1; r++){
+      for(var c = s.c0; c <= s.c1; c++){ block.data[r * block.cols + c] = null; }
+    }
+    drawAll();
+    commitHistory(before);
+    refreshStats();
+  }
+
+  // Colle le contenu du presse-papiers dans "block", coin haut-gauche en (r0, c0),
+  // en ignorant tout ce qui déborde de la grille cible.
+  function pasteClipboardAt(block, r0, c0){
+    var clip = state.clipboard;
+    if(!clip) return;
+    for(var r = 0; r < clip.rows; r++){
+      for(var c = 0; c < clip.cols; c++){
+        var tr = r0 + r, tc = c0 + c;
+        if(tr < 0 || tr >= block.rows || tc < 0 || tc >= block.cols) continue;
+        block.data[tr * block.cols + tc] = clip.data[r * clip.cols + c];
+      }
+    }
+  }
+
+  function paintAt(block, cell, colorValue){
+    var idx = cell.r * block.cols + cell.c;
+    if(block.data[idx] === colorValue) return false;
+    block.data[idx] = colorValue;
+    return true;
+  }
+
+  function pickAt(block, cell){
+    var idx = cell.r * block.cols + cell.c;
+    var v = block.data[idx];
+    if(v) setCurrentColor(v, hexToName(v));
+  }
+
+  // Remplissage façon pot de peinture : ne se propage qu'entre mailles
+  // adjacentes à angle droit (pas en diagonale), donc une frontière qui ne
+  // se touche qu'en coin suffit à fermer une forme et bloquer le remplissage.
+  function floodFill(block, startR, startC, fillColor){
+    var startIdx = startR * block.cols + startC;
+    var targetColor = block.data[startIdx];
+    if(targetColor === fillColor) return false;
+
+    var visited = new Uint8Array(block.data.length);
+    var stack = [[startR, startC]];
+
+    while(stack.length){
+      var cell = stack.pop();
+      var r = cell[0], c = cell[1];
+      if(r < 0 || r >= block.rows || c < 0 || c >= block.cols) continue;
+      var idx = r * block.cols + c;
+      if(visited[idx]) continue;
+      if(block.data[idx] !== targetColor) continue;
+      visited[idx] = 1;
+      block.data[idx] = fillColor;
+      stack.push([r - 1, c]);
+      stack.push([r + 1, c]);
+      stack.push([r, c - 1]);
+      stack.push([r, c + 1]);
+    }
+    return true;
+  }
+
+  canvas.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+
+  canvas.addEventListener("pointerdown", function(evt){
+    var pt = pointFromEvent(evt);
+    var hit = hitTest(pt.x, pt.y);
+    canvas.setPointerCapture(evt.pointerId);
+    if(!hit) return;
+
+    if(hit.region === "delete"){
+      deleteBlock(hit.block.id);
+      return;
+    }
+
+    if(hit.region === "header"){
+      setActiveBlock(hit.block.id);
+      state.dragBlock = {
+        id: hit.block.id, startX: pt.x, startY: pt.y,
+        blockX: hit.block.x, blockY: hit.block.y, moved: false,
+        before: snapshotWorkspace()
+      };
+      drawAll();
+      return;
+    }
+
+    if(hit.region === "margin"){
+      setActiveBlock(hit.block.id);
+      drawAll();
+      return;
+    }
+
+    // region === "grid"
+    var changedActive = state.activeId !== hit.block.id;
+    setActiveBlock(hit.block.id);
+    var block = hit.block;
+    var cell = { r: hit.r, c: hit.c };
+
+    if(evt.altKey || state.tool === "picker"){
+      pickAt(block, cell);
+      drawAll();
+      return;
+    }
+
+    if(state.tool === "bucket"){
+      var bucketErase = evt.button === 2;
+      var fillColor = bucketErase ? null : state.color;
+      var snapshot = snapshotWorkspace();
+      var changed = floodFill(block, cell.r, cell.c, fillColor);
+      if(changed || changedActive){
+        drawAll();
+        if(changed) commitHistory(snapshot);
+        refreshStats();
+      }
+      return;
+    }
+
+    if(state.tool === "select"){
+      state.selecting = { blockId: block.id, r0: cell.r, c0: cell.c, r1: cell.r, c1: cell.c };
+      state.selection = normalizeSelection(state.selecting);
+      updateSelectionUI();
+      drawAll();
+      return;
+    }
+
+    if(state.tool === "paste"){
+      if(!state.clipboard) return;
+      var pasteBefore = snapshotWorkspace();
+      pasteClipboardAt(block, cell.r, cell.c);
+      drawAll();
+      commitHistory(pasteBefore);
+      refreshStats();
+      return;
+    }
+
+    state.painting = true;
+    state.strokeSnapshot = snapshotWorkspace();
+    var isErase = state.tool === "eraser" || evt.button === 2;
+    state.paintingColorValue = isErase ? null : state.color;
+    paintAt(block, cell, state.paintingColorValue);
+    drawAll();
+  });
+
+  canvas.addEventListener("pointermove", function(evt){
+    var pt = pointFromEvent(evt);
+
+    if(state.selecting){
+      var selBlock = getBlockById(state.selecting.blockId);
+      if(selBlock){
+        var cc = cellInBlockClamped(selBlock, pt.x, pt.y);
+        state.selecting.r1 = cc.r;
+        state.selecting.c1 = cc.c;
+        state.selection = normalizeSelection(state.selecting);
+        updateSelectionUI();
+        drawAll();
+      }
+      return;
+    }
+
+    if(state.dragBlock){
+      var db = state.dragBlock;
+      var dx = pt.x - db.startX, dy = pt.y - db.startY;
+      if(Math.abs(dx) > 3 || Math.abs(dy) > 3) db.moved = true;
+      var b = getBlockById(db.id);
+      if(b){
+        b.x = Math.max(0, db.blockX + dx);
+        b.y = Math.max(0, db.blockY + dy);
+        redraw();
+      }
+      return;
+    }
+
+    if(state.painting){
+      var hit = hitTest(pt.x, pt.y);
+      if(!hit || hit.region !== "grid" || hit.block.id !== state.activeId) return;
+      if(paintAt(hit.block, { r: hit.r, c: hit.c }, state.paintingColorValue)) drawAll();
+      return;
+    }
+
+    var hover = hitTest(pt.x, pt.y);
+    var region = hover ? hover.region : null;
+    if(region !== state.hoverRegion){
+      state.hoverRegion = region;
+      canvas.style.cursor =
+        region === "delete" ? "pointer" :
+        region === "header" ? "grab" :
+        region === "grid" ?
+          (state.tool === "eraser" ? "cell" :
+           state.tool === "picker" ? "copy" :
+           state.tool === "bucket" ? "pointer" :
+           state.tool === "paste" ? "copy" :
+           "crosshair") :
+        "default";
+    }
+  });
+
+  function endStroke(){
+    if(state.selecting){
+      state.selecting = null;
+      return;
+    }
+    if(state.dragBlock){
+      var before = state.dragBlock.before;
+      var moved = state.dragBlock.moved;
+      state.dragBlock = null;
+      if(moved) commitHistory(before);
+      return;
+    }
+    if(!state.painting) return;
+    state.painting = false;
+    if(state.strokeSnapshot){
+      commitHistory(state.strokeSnapshot);
+      state.strokeSnapshot = null;
+    }
+    refreshStats();
+  }
+  canvas.addEventListener("pointerup", endStroke);
+  canvas.addEventListener("pointercancel", endStroke);
+  canvas.addEventListener("pointerleave", function(evt){
+    if(evt.buttons === 0) endStroke();
+  });
+
+  // ---------- taille de la grille active ----------
+  function applySize(){
+    var b = getActiveBlock();
+    if(!b) return;
+    var newCols = Math.min(120, Math.max(2, parseInt(inputCols.value, 10) || b.cols));
+    var newRows = Math.min(120, Math.max(2, parseInt(inputRows.value, 10) || b.rows));
+    inputCols.value = newCols;
+    inputRows.value = newRows;
+    if(newCols === b.cols && newRows === b.rows) return;
+
+    var newData = new Array(newCols * newRows).fill(null);
+    var copyCols = Math.min(newCols, b.cols);
+    var copyRows = Math.min(newRows, b.rows);
+    for(var r = 0; r < copyRows; r++){
+      for(var c = 0; c < copyCols; c++){
+        newData[r * newCols + c] = b.data[r * b.cols + c];
+      }
+    }
+    b.cols = newCols;
+    b.rows = newRows;
+    b.data = newData;
+
+    // un changement de taille modifie la signification des indices : on repart avec un historique propre
+    history = [];
+    future = [];
+    updateHistoryButtons();
+    validateSelection();
+
+    redraw();
+    refreshStats();
+    saveLocal();
+  }
+  btnApplySize.addEventListener("click", applySize);
+
+  var clearConfirmTimer = null;
+  btnClear.addEventListener("click", function(){
+    if(btnClear.classList.contains("danger-confirm")){
+      clearTimeout(clearConfirmTimer);
+      btnClear.classList.remove("danger-confirm");
+      btnClear.textContent = "Effacer la grille";
+      var b = getActiveBlock();
+      if(!b) return;
+      var before = snapshotWorkspace();
+      b.data = new Array(b.cols * b.rows).fill(null);
+      commitHistory(before);
+      drawAll();
+      refreshStats();
+      return;
+    }
+    btnClear.classList.add("danger-confirm");
+    btnClear.textContent = "Confirmer l'effacement ?";
+    clearConfirmTimer = setTimeout(function(){
+      btnClear.classList.remove("danger-confirm");
+      btnClear.textContent = "Effacer la grille";
+    }, 3000);
+  });
+
+  // ---------- ajouter / supprimer une grille sur le plan ----------
+  function addBlock(cols, rows){
+    var before = snapshotWorkspace();
+    var pos = nextBlockPosition();
+    var b = makeBlock(cols, rows, pos.x, pos.y);
+    state.blocks.push(b);
+    state.activeId = b.id;
+    syncSizeInputs();
+    redraw();
+    refreshStats();
+    commitHistory(before);
+    return b;
+  }
+  btnAddBlock.addEventListener("click", function(){
+    var cols = Math.min(120, Math.max(2, parseInt(inputCols.value, 10) || 20));
+    var rows = Math.min(120, Math.max(2, parseInt(inputRows.value, 10) || 20));
+    addBlock(cols, rows);
+  });
+
+  function deleteBlock(id){
+    if(state.blocks.length <= 1) return;
+    var before = snapshotWorkspace();
+    var idx = -1;
+    for(var i = 0; i < state.blocks.length; i++){ if(state.blocks[i].id === id){ idx = i; break; } }
+    if(idx === -1) return;
+    state.blocks.splice(idx, 1);
+    if(state.activeId === id){
+      state.activeId = state.blocks[Math.max(0, idx - 1)].id;
+      syncSizeInputs();
+    }
+    validateSelection();
+    redraw();
+    refreshStats();
+    commitHistory(before);
+  }
+  btnDeleteBlock.addEventListener("click", function(){
+    if(state.activeId != null) deleteBlock(state.activeId);
+  });
+
+  // ---------- couleurs : contrôles ----------
+  colorPicker.addEventListener("input", function(){
+    setCurrentColor(colorPicker.value, null);
+  });
+  btnApplyHex.addEventListener("click", function(){
+    var v = hexInput.value.trim();
+    if(v[0] !== "#") v = "#" + v;
+    if(isValidHex(v)) setCurrentColor(v, null);
+    else hexInput.value = state.color.toUpperCase();
+  });
+  hexInput.addEventListener("keydown", function(e){
+    if(e.key === "Enter") btnApplyHex.click();
+  });
+
+  brandSelect.addEventListener("change", function(){
+    state.brand = brandSelect.value;
+    renderPalette();
+  });
+  paletteFilter.addEventListener("input", renderPalette);
+  btnAddCustomColor.addEventListener("click", function(){ addCustomColor(customColorPicker.value); });
+
+  toolPen.addEventListener("click", function(){ setTool("pen"); });
+  toolEraser.addEventListener("click", function(){ setTool("eraser"); });
+  toolPicker.addEventListener("click", function(){ setTool("picker"); });
+  toolBucket.addEventListener("click", function(){ setTool("bucket"); });
+  toolSelect.addEventListener("click", function(){ setTool("select"); });
+  toolPaste.addEventListener("click", function(){ setTool("paste"); });
+
+  btnCopySelection.addEventListener("click", copySelection);
+  btnClearSelection.addEventListener("click", clearSelectionContents);
+
+  // ---------- zoom ----------
+  function currentZoomIndex(){
+    var closest = 0, best = Infinity;
+    for(var i = 0; i < zoomLevels.length; i++){
+      var d = Math.abs(zoomLevels[i] - state.cellSize);
+      if(d < best){ best = d; closest = i; }
+    }
+    return closest;
+  }
+  function setZoomIndex(i){
+    i = Math.min(zoomLevels.length - 1, Math.max(0, i));
+    state.cellSize = zoomLevels[i];
+    zoomPct.textContent = Math.round((state.cellSize / state.baseCellSize) * 100) + "%";
+    redraw();
+    saveLocal();
+  }
+  btnZoomIn.addEventListener("click", function(){ setZoomIndex(currentZoomIndex() + 1); });
+  btnZoomOut.addEventListener("click", function(){ setZoomIndex(currentZoomIndex() - 1); });
+
+  // ---------- export / import ----------
+  function triggerDownload(blob, filename){
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }
+
+  function exportJson(){
+    var b = getActiveBlock();
+    if(!b) return;
+    var payload = {
+      app: "mailles",
+      version: 1,
+      cols: b.cols,
+      rows: b.rows,
+      cellSize: state.cellSize,
+      data: b.data
+    };
+    var blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+    triggerDownload(blob, "mailles-" + b.cols + "x" + b.rows + ".json");
+  }
+
+  // Une grille importée en .json s'ajoute au plan de travail comme une
+  // nouvelle grille, à côté des autres (elle ne remplace rien).
+  function importJsonFile(file){
+    var reader = new FileReader();
+    reader.onload = function(){
+      var parsed;
+      try{ parsed = JSON.parse(reader.result); }
+      catch(e){ alertInline("Ce fichier n'est pas un JSON valide."); return; }
+      if(!parsed || !Array.isArray(parsed.data) || !parsed.cols || !parsed.rows || parsed.cols * parsed.rows !== parsed.data.length){
+        alertInline("Ce fichier ne ressemble pas à une grille Mailles.");
+        return;
+      }
+      var before = snapshotWorkspace();
+      var pos = nextBlockPosition();
+      var b = makeBlock(parsed.cols, parsed.rows, pos.x, pos.y, parsed.data);
+      state.blocks.push(b);
+      state.activeId = b.id;
+      if(parsed.cellSize) state.cellSize = parsed.cellSize;
+      syncSizeInputs();
+      redraw();
+      refreshStats();
+      commitHistory(before);
+      saveLocal();
+    };
+    reader.readAsText(file);
+  }
+
+  function alertInline(message){
+    // Pas de confirm()/alert() natif fiable dans tous les contextes : on
+    // réutilise le style du bouton de confirmation d'effacement.
+    var previous = btnImportJson.textContent;
+    btnImportJson.textContent = message;
+    btnImportJson.classList.add("danger-confirm");
+    setTimeout(function(){
+      btnImportJson.textContent = previous;
+      btnImportJson.classList.remove("danger-confirm");
+    }, 3000);
+  }
+
+  // Exporte tout le plan de travail (toutes les grilles visibles à l'écran).
+  function exportPng(){
+    canvas.toBlob(function(blob){
+      if(!blob) return;
+      var name = state.blocks.length > 1 ? "mailles-plan-" + state.blocks.length + "-grilles.png" : "mailles-" + state.blocks[0].cols + "x" + state.blocks[0].rows + ".png";
+      triggerDownload(blob, name);
+    });
+  }
+
+  btnExportJson.addEventListener("click", exportJson);
+  btnExportPng.addEventListener("click", exportPng);
+
+  btnImportJson.addEventListener("click", function(){ fileInputJson.click(); });
+  fileInputJson.addEventListener("change", function(){
+    var file = fileInputJson.files && fileInputJson.files[0];
+    if(file) importJsonFile(file);
+    fileInputJson.value = "";
+  });
+
+  // ---------- import d'image (pixelisation) ----------
+  var importState = { image: null, imgData: null, iw: 0, ih: 0, resultData: null, resultCols: 0, resultRows: 0 };
+
+  // Cale sur la palette de fils actuellement sélectionnée dans la barre latérale
+  // (marque + palette perso), pour que l'import "collé sur la palette" reproduise
+  // la marque avec laquelle on travaille.
+  function nearestPaletteColor(r, g, b){
+    var colors = BRANDS[state.brand].colors.concat(state.customPalette.map(function(h){ return [h, h]; }));
+    if(colors.length === 0) colors = MAILLES_COLORS;
+    var best = colors[0][0], bestDist = Infinity;
+    for(var i = 0; i < colors.length; i++){
+      var hex = colors[i][0];
+      var pr = parseInt(hex.slice(1,3),16), pg = parseInt(hex.slice(3,5),16), pb = parseInt(hex.slice(5,7),16);
+      var d = (r-pr)*(r-pr) + (g-pg)*(g-pg) + (b-pb)*(b-pb);
+      if(d < bestDist){ bestDist = d; best = hex; }
+    }
+    return best;
+  }
+
+  function rgbToHex(r, g, b){
+    function h(v){ return v.toString(16).padStart(2, "0"); }
+    return "#" + h(r) + h(g) + h(b);
+  }
+
+  function openImportModal(){
+    importModal.hidden = false;
+  }
+  function closeImportModal(){
+    importModal.hidden = true;
+    importState = { image: null, imgData: null, iw: 0, ih: 0, resultData: null, resultCols: 0, resultRows: 0 };
+    importSourceImg.hidden = true;
+    importSourceImg.src = "";
+    importDropzone.hidden = false;
+    importDropzoneMsg.textContent = "Glisse une image ici, ou";
+    btnImportApply.disabled = true;
+    var pctx = importPreviewCanvas.getContext("2d");
+    pctx.clearRect(0, 0, importPreviewCanvas.width, importPreviewCanvas.height);
+  }
+
+  function showImportError(message){
+    importDropzone.hidden = false;
+    importDropzoneMsg.textContent = message;
+  }
+
+  function loadImageFile(file){
+    importDropzone.hidden = false;
+    importDropzoneMsg.textContent = "Chargement...";
+    var reader = new FileReader();
+    reader.onerror = function(){
+      showImportError("Impossible de lire ce fichier.");
+    };
+    reader.onload = function(){
+      var img = new Image();
+      img.onerror = function(){
+        showImportError("Ce fichier n'est pas une image lisible.");
+      };
+      img.onload = function(){
+        try{
+          importState.image = img;
+          var off = document.createElement("canvas");
+          off.width = img.naturalWidth;
+          off.height = img.naturalHeight;
+          var octx = off.getContext("2d");
+          octx.drawImage(img, 0, 0);
+          importState.imgData = octx.getImageData(0, 0, off.width, off.height).data;
+          importState.iw = off.width;
+          importState.ih = off.height;
+
+          importSourceImg.src = reader.result;
+          importSourceImg.hidden = false;
+          importDropzone.hidden = true;
+          btnImportApply.disabled = false;
+
+          // Suggère des dimensions qui respectent les proportions de l'image,
+          // pratique pour reproduire une grille existante si on connaît sa largeur.
+          var suggestedCols = importCols.value ? parseInt(importCols.value, 10) : 20;
+          var ratio = off.height / off.width;
+          var suggestedRows = Math.max(2, Math.round(suggestedCols * ratio));
+          importRows.value = Math.min(120, suggestedRows);
+
+          updateImportPreview();
+        }catch(err){
+          showImportError("Échec du traitement de l'image (" + err.message + ").");
+        }
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function computeCellRgb(cols, rows, r, c){
+    var iw = importState.iw, ih = importState.ih, imgData = importState.imgData;
+    var x0 = (c / cols) * iw, x1 = ((c + 1) / cols) * iw;
+    var y0 = (r / rows) * ih, y1 = ((r + 1) / rows) * ih;
+    var sx0 = Math.floor(x0), sx1 = Math.max(sx0 + 1, Math.min(iw, Math.ceil(x1)));
+    var sy0 = Math.floor(y0), sy1 = Math.max(sy0 + 1, Math.min(ih, Math.ceil(y1)));
+    var rSum = 0, gSum = 0, bSum = 0, count = 0;
+    for(var y = sy0; y < sy1; y++){
+      for(var x = sx0; x < sx1; x++){
+        var idx = (y * iw + x) * 4;
+        rSum += imgData[idx]; gSum += imgData[idx+1]; bSum += imgData[idx+2];
+        count++;
+      }
+    }
+    return [Math.round(rSum/count), Math.round(gSum/count), Math.round(bSum/count)];
+  }
+
+  function updateImportPreview(){
+    if(!importState.imgData) return;
+    var cols = Math.min(120, Math.max(2, parseInt(importCols.value, 10) || 20));
+    var rows = Math.min(120, Math.max(2, parseInt(importRows.value, 10) || 20));
+    var usePalette = document.querySelector('input[name="importColorMode"]:checked').value === "palette";
+
+    var result = new Array(cols * rows);
+    for(var r = 0; r < rows; r++){
+      for(var c = 0; c < cols; c++){
+        var rgb = computeCellRgb(cols, rows, r, c);
+        result[r * cols + c] = usePalette ? nearestPaletteColor(rgb[0], rgb[1], rgb[2]) : rgbToHex(rgb[0], rgb[1], rgb[2]);
+      }
+    }
+    importState.resultData = result;
+    importState.resultCols = cols;
+    importState.resultRows = rows;
+
+    var previewCell = Math.max(2, Math.min(18, Math.floor(360 / Math.max(cols, rows))));
+    importPreviewCanvas.width = cols * previewCell;
+    importPreviewCanvas.height = rows * previewCell;
+    var pctx = importPreviewCanvas.getContext("2d");
+    for(var rr = 0; rr < rows; rr++){
+      for(var cc = 0; cc < cols; cc++){
+        pctx.fillStyle = result[rr * cols + cc];
+        pctx.fillRect(cc * previewCell, rr * previewCell, previewCell, previewCell);
+      }
+    }
+  }
+
+  function applyImportResult(){
+    if(!importState.resultData) return;
+    var before = snapshotWorkspace();
+    var asNew = importAsNew.checked || state.blocks.length === 0;
+    if(asNew){
+      var pos = nextBlockPosition();
+      var b = makeBlock(importState.resultCols, importState.resultRows, pos.x, pos.y, importState.resultData);
+      state.blocks.push(b);
+      state.activeId = b.id;
+    } else {
+      var active = getActiveBlock();
+      active.cols = importState.resultCols;
+      active.rows = importState.resultRows;
+      active.data = importState.resultData;
+      history = [];
+      future = [];
+      updateHistoryButtons();
+    }
+    syncSizeInputs();
+    redraw();
+    refreshStats();
+    if(asNew) commitHistory(before);
+    saveLocal();
+    closeImportModal();
+  }
+
+  function openFilePicker(){ fileInputImage.click(); }
+
+  btnImportImage.addEventListener("click", function(){
+    openImportModal();
+    openFilePicker();
+  });
+  btnImportChoose.addEventListener("click", openFilePicker);
+  fileInputImage.addEventListener("change", function(){
+    var file = fileInputImage.files && fileInputImage.files[0];
+    if(file){
+      openImportModal();
+      loadImageFile(file);
+    }
+    fileInputImage.value = "";
+  });
+  importCols.addEventListener("input", updateImportPreview);
+  importRows.addEventListener("input", updateImportPreview);
+  document.querySelectorAll('input[name="importColorMode"]').forEach(function(el){
+    el.addEventListener("change", updateImportPreview);
+  });
+  btnImportApply.addEventListener("click", applyImportResult);
+  btnImportCancel.addEventListener("click", closeImportModal);
+  btnImportClose.addEventListener("click", closeImportModal);
+  importModal.addEventListener("click", function(e){
+    if(e.target === importModal) closeImportModal();
+  });
+  window.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && !importModal.hidden) closeImportModal();
+  });
+
+  // Glisser-déposer une image directement sur la fenêtre d'import.
+  ["dragenter", "dragover"].forEach(function(evtName){
+    importModal.addEventListener(evtName, function(e){
+      e.preventDefault();
+      importModal.classList.add("drag-over");
+    });
+  });
+  ["dragleave", "drop"].forEach(function(evtName){
+    importModal.addEventListener(evtName, function(e){
+      if(evtName === "dragleave" && e.target !== importModal) return;
+      importModal.classList.remove("drag-over");
+    });
+  });
+  importModal.addEventListener("drop", function(e){
+    e.preventDefault();
+    var file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if(file && file.type.indexOf("image/") === 0) loadImageFile(file);
+  });
+
+  // ---------- clavier ----------
+  window.addEventListener("keydown", function(e){
+    var tag = (document.activeElement && document.activeElement.tagName) || "";
+    if(tag === "INPUT" || tag === "TEXTAREA") return;
+    var mod = e.ctrlKey || e.metaKey;
+    if(mod && e.key.toLowerCase() === "z" && !e.shiftKey){ e.preventDefault(); undo(); }
+    else if(mod && (e.key.toLowerCase() === "y" || (e.key.toLowerCase() === "z" && e.shiftKey))){ e.preventDefault(); redo(); }
+    else if(mod && e.key.toLowerCase() === "c"){ if(state.selection){ e.preventDefault(); copySelection(); } }
+    else if(mod && e.key.toLowerCase() === "v"){ if(state.clipboard){ e.preventDefault(); setTool("paste"); } }
+    else if((e.key === "Delete" || e.key === "Backspace") && state.selection){ e.preventDefault(); clearSelectionContents(); }
+    else if(e.key === "Escape" && state.selection){ state.selection = null; updateSelectionUI(); drawAll(); }
+  });
+  btnUndo.addEventListener("click", undo);
+  btnRedo.addEventListener("click", redo);
+
+  window.addEventListener("resize", function(){ /* le canvas garde sa taille logique, pas besoin de redessiner */ });
+
+  // ---------- démarrage ----------
+  function boot(savedWorkspace){
+    var loaded = false;
+    if(savedWorkspace && Array.isArray(savedWorkspace.blocks) && savedWorkspace.blocks.length){
+      state.blocks = savedWorkspace.blocks.map(function(b){
+        return { id: b.id, cols: b.cols, rows: b.rows, x: b.x || 0, y: b.y || 0, data: b.data };
+      });
+      var maxId = 0;
+      state.blocks.forEach(function(b){ maxId = Math.max(maxId, b.id || 0); });
+      state.nextBlockId = maxId + 1;
+      state.activeId = savedWorkspace.activeId && state.blocks.some(function(b){ return b.id === savedWorkspace.activeId; })
+        ? savedWorkspace.activeId : state.blocks[0].id;
+      if(savedWorkspace.cellSize) state.cellSize = savedWorkspace.cellSize;
+      loaded = true;
+    } else {
+      loaded = loadLocal();
+    }
+    if(!loaded){
+      var b = makeBlock(20, 20, 0, 0);
+      state.blocks = [b];
+      state.activeId = b.id;
+    }
+    syncSizeInputs();
+    setZoomIndex(currentZoomIndex());
+    loadCustomPalette();
+    renderBrandSelect();
+    renderPalette();
+    renderRecent();
+    renderCustom();
+    setCurrentColor(state.color, hexToName(state.color));
+    setTool("pen");
+    updateHistoryButtons();
+    updateSelectionUI();
+    redraw();
+    refreshStats();
+  }
+
+  if(window.claude && window.claude.hot){
+    window.claude.hot.snapshot(function(){
+      return { cellSize: state.cellSize, activeId: state.activeId, blocks: state.blocks };
+    });
+    if(window.claude.hot.ready){
+      window.claude.hot.ready(function(data){ boot(data); });
+    } else {
+      boot(window.claude.hot.data);
+    }
+  } else {
+    boot(null);
+  }
+})();
+</script>
+</body>
+</html>
